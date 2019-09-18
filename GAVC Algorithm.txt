@@ -13,11 +13,8 @@ is a one dimensional vector whose N elements are Tensors of rank 1. The Frame ve
 Tensors of rank 2. In vector terms, the Stimulus vector is made up of N vectors whose length are 1 and the Frame vector
 is made up of N vectors whose length is variable.
 
-We may then postulate that there exists a Tensor of rank 3 called the Mapping Tensor that maps the N elements of both
-the Stimulus and Frame vectors together element-wise. The Genetic Algorithm's goal is to generate the Mapping Tensor.
-
-One can then say that if the total data mass represented by the Frame Vector is greater than the data mass of the
-Mapping Tensor then the Mapping Tensor is a Compression Operator over a given data mass.
+We may then postulate that there exists a Tensor of rank 3 called the Compression Operator that maps the N elements of both
+the Stimulus and Frame vectors together element-wise. The Genetic Algorithm's goal is to generate the Compression Operator.
 
 Finally, the ultimate goal is for the algorithm to iteratively generate Compression Operators over precedent Compression
 Operators using the same schema. Once the algorithm generates a Compression Operator, that Compression Operator is loaded
