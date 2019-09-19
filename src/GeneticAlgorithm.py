@@ -1,59 +1,70 @@
 
 class GeneticAlgorithm :
 
+    # Data Frame
+    dataFrame = None
+
     # Population
-    populationSize = 100
     population = []
+    populationSize = 100
     
     # Fitnesses
     bestFitness = 99999999
 
     # Generations
-    maxGenerations = 99999999
+    maxGenerations = 1000
 
-    def run() :
+    def __init__(self, dataFrame) :
 
-        generatePopulation()
+        #Set the data frame for this GA instance
+        self.dataFrame = dataFrame
+
+    def run(self) :
+
+        self.generatePopulation()
         
         # Main GA algortihm loop
         generationCount = 0
-        while generationCount < maxGenerations :
+        while generationCount < self.maxGenerations :
 
             # Run GA functions 
-            selectedPopulation = select(population)
-            crossedOverPopulation = crossover(selectedPopulation)
-            mutatedPopulation = mutate(crossedOverPopulation)
-            evaluatedPopulation = evaluatePopulation(mutatedPopulation)
-            population = sortPopulation(evaluatedPopulation)
+            selectedPopulation = self.select(self.population)
+            crossedOverPopulation = self.crossover(selectedPopulation)
+            mutatedPopulation = self.mutate(crossedOverPopulation)
+            evaluatedPopulation = self.evaluatePopulation(mutatedPopulation)
+            self.population = self.sortPopulation(evaluatedPopulation)
 
             # Check fitnesses
-            currentBestFitness = FIXME
-            if currentBestFiness < bestFitness :
+            currentBestFitness = 0 #FIX ME
+            if currentBestFitness < bestFitness :
                 bestFitness = currentBestFitness
                 
             generationCount = generationCount + 1
 
-    def generatePopulation() :
+    def generatePopulation(self) :
         return 0
         # IMPLEMENT ME
 
-    def select(population) :
+    def select(self, population) :
         return 0
         # IMPLEMENT ME
 
-    def crossover(population) :
+    def crossover(self, population) :
         return 0
         # IMPLEMENT ME
 
-    def mutate(population) :
+    def mutate(self, population) :
         return 0
         # IMPLEMENT ME
 
-    def sortPopulation(population) :
+    def evaluatePopulation(self, population) :
+        return 0
+
+    def sortPopulation(self, population) :
         return 9
         # IMPLEMENT ME
 
-    def mergeSort(population) :
+    def mergeSort(self, population) :
 
         if len(population) == 1 :
             return population
@@ -62,12 +73,12 @@ class GeneticAlgorithm :
         a = population[:mid]
         b = population[mid:]
 
-        sortedA = mergeSort(a)
-        sortedB = mergeSort(b)
+        sortedA = self.mergeSort(a)
+        sortedB = self.mergeSort(b)
 
-        return merge(sortedA, sortedB)
+        return self.merge(sortedA, sortedB)
 
-    def merge(a, b) :
+    def merge(self, a, b) :
 
         merged = []
 
@@ -82,12 +93,7 @@ class GeneticAlgorithm :
             merged.append(a.pop(0))
 
         while len(b) > 0 :
-            merged.add(b.pop(0))
+            merged.append(b.pop(0))
 
         return merged
 
-x = [3, 9, 1]
-
-mergeSort(x)
-
-print(y)
