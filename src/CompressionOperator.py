@@ -1,5 +1,14 @@
 
 class CompressionOperator :
 
-    def __init__(self) :
-        x = 1
+    # Fitness
+    fitness = 99999999
+
+    # The Product vector is one dimensional in this implementation
+    productVectorSize = None
+
+    def __init__(self, productVectorSize) :
+        self.productVectorSize = productVectorSize
+
+    def setFitness(self, fitness) :
+        self.fitness = fitness
