@@ -10,5 +10,12 @@ class CompressionOperator :
     def __init__(self, productVectorSize) :
         self.productVectorSize = productVectorSize
 
+    def mutate(self) :
+        return 0
+        #Implement me
+
     def setFitness(self, fitness) :
         self.fitness = fitness
+
+    def getFitness(self) :
+        return fitness
