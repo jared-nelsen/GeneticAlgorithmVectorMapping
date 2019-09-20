@@ -189,7 +189,7 @@ class GeneticAlgorithm :
     def evaluatePopulation(self, population) :
         
         for compressionOperator in population :
-            self.dataFrame.evaluateCompressionOperator()
+            self.dataFrame.evaluateCompressionOperator(compressionOperator)
 
     # Function:
     # --------- 
