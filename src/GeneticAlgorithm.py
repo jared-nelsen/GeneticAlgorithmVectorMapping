@@ -47,7 +47,7 @@ class GeneticAlgorithm :
             self.sortPopulation()
 
             # Check fitnesses
-            currentBestFitness = 0 #FIX ME
+            currentBestFitness = self.population[-1].getFitness()
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
                 
@@ -200,7 +200,7 @@ class GeneticAlgorithm :
     #   ------------------------------
     #   Crossover occurs based on the specified crossover rate. Crossover rates are 
     #   meant to be high and usually always higher than mutation rates. Some 
-    #   researched-backed values are .8 - .99. Crossover is representative of the
+    #   research-backed values are .8 - .99. Crossover is representative of the
     #   exploratory element of the algorithm. It seeks to deviate enough from the 
     #   current best solutions in order to find 'distant' solutions that may be 
     #   better. It does this by recombinating the encodings of the population of 
@@ -219,8 +219,43 @@ class GeneticAlgorithm :
     #
     # --------------------------------------------------------------------------
     def crossover(self) :
-        return 0
-        # IMPLEMENT ME
+
+        crossedOverPopulation = []
+        
+        for i in range(len(self.population)) :
+
+            parentA = self.population[i]
+            i = i + 1
+            parentB = self.population[i]
+
+            newPopulationMemberBackingTensor = []
+            parentABackingTensor = parentA.getBackingTensor()
+            parentBBackingTensor = parentB.getBackingTensor()
+
+            for j in range(len(newPopulationMemberBackingTensor)) :
+
+                newPopulationMemberBackingTensorRank1TensorMember = []
+                parentABackingTensorRank1TensorMember = parentABackingTensor[j]
+                parentBBackingTensorRank1TensorMember = parentBBackingTensor[j]
+
+                for k in range(len(parentABackingTensorRank1TensorMember)) : 
+
+                    # Notice we default to parent A's data
+                    if random.uniform(0, 1) < self.crossoverRate :
+                        newPopulationMemberBackingTensorRank1TensorMember.append(parentBBackingTensorRank1TensorMember[k])
+                    else :
+                        newPopulationMemberBackingTensorRank1TensorMember.append(parentABackingTensorRank1TensorMember[k])
+
+                newPopulationMemberBackingTensor.append(newPopulationMemberBackingTensorRank1TensorMember)    
+
+            newPopulationMember = CompressionOperator(parentA.getProductVectorSize())
+            newPopulationMember.setBackingTensor(newPopulationMemberBackingTensor)
+
+            crossedOverPopulation.append(newPopulationMember)
+
+
+        self.population = crossedOverPopulation
+
 
     # Function:
     # --------- 
