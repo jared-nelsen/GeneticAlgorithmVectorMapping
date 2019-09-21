@@ -10,7 +10,7 @@ class CompressionOperator :
     def __init__(self, productVectorSize) :
         self.productVectorSize = productVectorSize
 
-    def mutate(self) :
+    def mutate(self, mutationRate) :
         return 0
         #Implement me
 

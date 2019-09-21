@@ -65,9 +65,9 @@ class GeneticAlgorithm :
     # -----------
     #   None
     # --------------------------------------------------------------------------
-    # Returns:
+    # Result:
     # --------
-    #   Nothing
+    #   The global population has been generated
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
@@ -96,14 +96,13 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   population - The population as it stands at the beginning of the GA
-    #                generation
+    #   None
     # --------------------------------------------------------------------------
-    # Returns:
+    # Result:
     # --------
-    #   A new population of selected members. The new population is double the
-    #   size of the original population. This new population will be made up of
-    #   consecutive parents that are to be crossed over.
+    #   A new population of selected members has been generated. The new population 
+    #   is double the size of the original population. This new population will be
+    #   made up of consecutive parents that are to be crossed over.
     #
     #   Ordering Schema:
     #   ----------------
@@ -139,8 +138,6 @@ class GeneticAlgorithm :
     #   A good explanation of various selection strategies:
     #       https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
     # --------------------------------------------------------------------------
-
-    # --------------------------------------------------------------------------
     def select(self) :
 
         selectedPopulation = []
@@ -149,7 +146,7 @@ class GeneticAlgorithm :
         for compressionOperator in self.population :
             fitnessSumOfPopulation = fitnessSumOfPopulation + compressionOperator.getFitness()
 
-        for i in range(len(population) * 2) : # Notice the doubling of the population
+        for i in range(len(self.population) * 2) : # Notice the doubling of the population
             randomFitness = random.uniform(0, fitnessSumOfPopulation)
             localFitnessSum = 0
             for j in range(len(self.population)) :
@@ -181,7 +178,49 @@ class GeneticAlgorithm :
     #   exploration should be made on logical (good fitness) bases. Note that the 
     #   population size passed to this routine should be exactly double that of the
     #   working population because the generation of N childred requires N * 2 parents.
-    def crossover(self, population) :
+
+    # Function:
+    # --------- 
+    #   crossover()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Crosses over the Compression Operators in the fitness-selected population
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   None
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   A new resized population that has been crossed over from the selected
+    #   parents in the population at the beginning of this function.
+    #
+    #   The result is that the genetic information from each parent 2-tuple
+    #   has been assimilated into one single new child. The set of these
+    #   children becomes the new population.
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   This algorithm takes the ordered tuples of parents in the fitness-selected
+    #   population  and crosses over their numerical features.
+    #
+    #   Crossover methodology:
+    #   ----------------------
+    #   This first iteration of the crossover algorithm only crosses over the
+    #   values in the Compression Operator Tensor by simply picking one of
+    #   the two values in each parent to pass on to the single child. This
+    #   random picking happens at a rate represented by the crossover rate
+    #   that is global to the Genetic Algorithm.
+    #
+    #       Methodology example:
+    #       --------------------
+    #       Parent A Tensor: [1, 2, 3, 9]
+    #       Parent B Tensor: [4, 5, 6, 8]
+    #       Child Tensor:    [1, 5, 3, 8]
+    #
+    # --------------------------------------------------------------------------
+    def crossover(self) :
         return 0
         # IMPLEMENT ME
 
@@ -195,23 +234,31 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   population - The population as it stands after the Crossover process
+    #   None
     # --------------------------------------------------------------------------
-    # Returns:
+    # Result:
     # --------
-    #   The mutated population
+    #   The global population has been mutated
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
     #   Mutates the numerical and shape features of the Compression Operators in
     #   the population.
     #
-    #   This implementation of the mutation algorithm can:
+    #   The current implementation of the mutation algortithm can:
+    #   ----------------------------------------------------------
+    #   1. Mutate the values in the Compression Operator Tensor
+    #
+    #   An ideal future implementation of the mutation algorithm can:
+    #   -------------------------------------------------------------
     #   1. Add a layer in the Z dimension of the rank 3 Tensor that is the
     #      Compression Operator.
     #   2. Remove a layer in the Z dimension of the rank 3 Tensor that is the
     #      Compression Operator.
     #   3. Mutate the values in the Compression Operator Tensor
+    #
+    #       ** This ideal mutation strategy will affect how crossover is
+    #          performed.
     #
     #   Numerical Mutation methodology:
     #   --------------------------------
@@ -258,7 +305,7 @@ class GeneticAlgorithm :
     def mutate(self) :
         
         for compressionOperator in self.population :
-            compressionOperator.mutate()
+            compressionOperator.mutate(self.mutationRate)
 
     # Function:
     # --------- 
@@ -271,11 +318,11 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   population - The population as it stands after the Mutation process
+    #   None
     # --------------------------------------------------------------------------
-    # Returns:
+    # Result:
     # --------
-    #   Nothing
+    #   The global population has had each of their fitnesses evaluated
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
@@ -301,19 +348,19 @@ class GeneticAlgorithm :
     # ---------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   population - The population as it stands after the Evaluation process
+    #   None
     # ---------------------------------------------------------------------------
-    # Returns: 
+    # Result: 
     # --------
-    #   The population sorted by fitness in DESCENDING order.
+    #   The population has been sorted by fitness in DESCENDING order.
     # ---------------------------------------------------------------------------
     # Explanation:
     # ------------
     #   Uses Merge Sort to sort the evaluated population to get set up for
     #   the Selection process in the next iteration of the algorithm.
     # ---------------------------------------------------------------------------
-    def sortPopulation(self, population) :
-        self.population = self.mergeSort(population)
+    def sortPopulation(self) :
+        self.population = self.mergeSort(self.population)
 
     # Function:
     # --------- 
@@ -325,7 +372,7 @@ class GeneticAlgorithm :
     # ---------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   population - The population as it stands after the Evaluation process.
+    #   mergingPopulation - The population as it stands after the Evaluation process.
     # ---------------------------------------------------------------------------
     # Returns: 
     # --------
@@ -340,14 +387,14 @@ class GeneticAlgorithm :
     #
     #   Merging is done in DESCENDING ORDER
     # ---------------------------------------------------------------------------
-    def mergeSort(self :
+    def mergeSort(self, mergingPopulation) :
 
-        if len(population) == 1 :
-            return population
+        if len(mergingPopulation) == 1 :
+            return mergingPopulation
 
-        mid = len(population) // 2
-        a = self.population[:mid]
-        b = self.population[mid:]
+        mid = len(mergingPopulation) // 2
+        a = mergingPopulation[:mid]
+        b = mergingPopulation[mid:]
 
         sortedA = self.mergeSort(a)
         sortedB = self.mergeSort(b)
