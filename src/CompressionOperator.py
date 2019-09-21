@@ -1,4 +1,6 @@
 
+import random as random
+
 class CompressionOperator :
 
     # Fitness
@@ -21,9 +23,19 @@ class CompressionOperator :
     def __init__(self, productVectorSize) :
         self.productVectorSize = productVectorSize
 
-    def mutate(self, mutationRate) :
-        return 0
-        #Implement me
+    def mutate(self, mutationRate, mutationMagnitude, tensorValueLow, tensorValueHigh) :
+        
+        for i in range(len(self.backingTensor)) :
+            rank1Tensor = self.backingTensor[i]
+            for j in range(len(rank1Tensor)) :
+                if random.uniform(0, 1) < mutationRate :
+                    if random.uniform(0, 1) < .5 :
+                        rank1Tensor[j] = random.uniform(tensorValueLow, tensorValueHigh)
+                    else :
+                        if random.uniform(0, 1) < .5 :
+                            rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
+                        else :
+                            rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
 
     def setFitness(self, fitness) :
         self.fitness = fitness

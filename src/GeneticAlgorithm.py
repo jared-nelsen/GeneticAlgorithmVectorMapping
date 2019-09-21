@@ -22,6 +22,9 @@ class GeneticAlgorithm :
     # Hyperparameters
     crossoverRate = .9
     mutationRate = .01
+    mutationMagnitude = .001
+    tensorValueLow = -99999999
+    tensorValueHigh = 99999999
 
     def __init__(self, dataFrame) :
 
@@ -293,6 +296,17 @@ class GeneticAlgorithm :
     #       ** This ideal mutation strategy will affect how crossover is
     #          performed.
     #
+    #   A more advanced form of mutation can:
+    #   -------------------------------------
+    #   1. Mutate mutation hyperparameters:
+    #       1. tensorValueLow
+    #       2. tensorValueHigh
+    #       3. mutationMagnitude
+    #       4. ratioBetweenValueReplacementAndValueAdjustment
+    #
+    #       ** This strategy would require a refactor to allow each Compression
+    #          Operator value to hold its own mutation hyperparameters
+    #
     #   Numerical Mutation methodology:
     #   --------------------------------
     #   The Mutation of the values in the Tensor can be performed under several
@@ -300,8 +314,10 @@ class GeneticAlgorithm :
     #   avoid excessive hyperparameter tuning I will use a balanced strategy.
     #
     #       A value can be:
-    #       1. Completely thrown out and replaced with a completely random value
-    #       2. Slightly altered with tiny numerical adjustments
+    #       ---------------
+    #       1. Replaced: The value is completely thrown out and replaced with a
+    #                    completely within the range of possible tensor values 
+    #       2. Adjusted: The value is altered with tiny numerical adjustments
     #       
     #       The fact of the matter is that I don't quite know which is objectively
     #       better. There will be an element of experimentation. However, the real
@@ -338,7 +354,10 @@ class GeneticAlgorithm :
     def mutate(self) :
         
         for compressionOperator in self.population :
-            compressionOperator.mutate(self.mutationRate)
+            compressionOperator.mutate(self.mutationRate,
+                                       self.mutationMagnitude,
+                                       self.tensorValueLow,
+                                       self.tensorValueHigh)
 
     # Function:
     # --------- 
