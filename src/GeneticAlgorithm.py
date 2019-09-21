@@ -156,29 +156,6 @@ class GeneticAlgorithm :
 
         self.population = selectedPopulation
 
-
-
-    # Explanation:
-    # ------------
-    #   Crossover occurs based on the specified crossover rate. Crossover rates are 
-    #   meant to be high and usually always higher than mutation rates. Some 
-    #   researched-backed values are .8 - .99. Crossover is representative of the
-    #   exploratory element of the algorithm. It seeks to deviate enough from the 
-    #   current best solutions in order to find 'distant' solutions that may be 
-    #   better. It does this by recombinating the encodings of the population of 
-    #   solutions with each other. Solutions with a higher fitness have a 
-    #   commensurately better chance of passing on their information. This logic is
-    #   carried out in the select routine. However, there is still a chance that a 
-    #   better solution lies 'closer' to a current poor one. The GA takes this into 
-    #   account by recombinating solutions with each other. This methodology allows
-    #   these properties: a graceful approch to a better solution, consideration
-    #   that a poorer solution may contain effective components, consideration that
-    #   it is logical that better solutions working together will probably result in
-    #   an even better solution, extreme explorations should be mitigated, and 
-    #   exploration should be made on logical (good fitness) bases. Note that the 
-    #   population size passed to this routine should be exactly double that of the
-    #   working population because the generation of N childred requires N * 2 parents.
-
     # Function:
     # --------- 
     #   crossover()
@@ -218,6 +195,27 @@ class GeneticAlgorithm :
     #       Parent A Tensor: [1, 2, 3, 9]
     #       Parent B Tensor: [4, 5, 6, 8]
     #       Child Tensor:    [1, 5, 3, 8]
+    #
+    #   General Crossover information:
+    #   ------------------------------
+    #   Crossover occurs based on the specified crossover rate. Crossover rates are 
+    #   meant to be high and usually always higher than mutation rates. Some 
+    #   researched-backed values are .8 - .99. Crossover is representative of the
+    #   exploratory element of the algorithm. It seeks to deviate enough from the 
+    #   current best solutions in order to find 'distant' solutions that may be 
+    #   better. It does this by recombinating the encodings of the population of 
+    #   solutions with each other. Solutions with a higher fitness have a 
+    #   commensurately better chance of passing on their information. This logic is
+    #   carried out in the select routine. However, there is still a chance that a 
+    #   better solution lies 'closer' to a current poor one. The GA takes this into 
+    #   account by recombinating solutions with each other. This methodology allows
+    #   these properties: a graceful approch to a better solution, consideration
+    #   that a poorer solution may contain effective components, consideration that
+    #   it is logical that better solutions working together will probably result in
+    #   an even better solution, extreme explorations should be mitigated, and 
+    #   exploration should be made on logical (good fitness) bases. Note that the 
+    #   population size passed to this routine should be exactly double that of the
+    #   working population because the generation of N childred requires N * 2 parents.     
     #
     # --------------------------------------------------------------------------
     def crossover(self) :
