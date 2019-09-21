@@ -18,4 +18,4 @@ class CompressionOperator :
         self.fitness = fitness
 
     def getFitness(self) :
-        return fitness
+        return self.fitness

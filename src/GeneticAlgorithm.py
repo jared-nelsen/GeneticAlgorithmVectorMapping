@@ -1,6 +1,8 @@
 
-import DataFrame
-import CompressionOperator
+import random as random
+
+from DataFrame import DataFrame
+from CompressionOperator import CompressionOperator
 
 class GeneticAlgorithm :
 
@@ -28,18 +30,21 @@ class GeneticAlgorithm :
 
     def run(self) :
 
+        # Generate the population
         self.generatePopulation()
+        # Evaluate it for the first time
+        self.evaluatePopulation()
         
         # Main GA algortihm loop
         generationCount = 0
         while generationCount < self.maxGenerations :
 
             # Run GA functions 
-            selectedPopulation = self.select(self.population)
-            crossedOverPopulation = self.crossover(selectedPopulation)
-            mutatedPopulation = self.mutate(crossedOverPopulation)
-            evaluatedPopulation = self.evaluatePopulation(mutatedPopulation)
-            self.population = self.sortPopulation(evaluatedPopulation)
+            self.select()
+            self.crossover()
+            self.mutate()
+            self.evaluatePopulation()
+            self.sortPopulation()
 
             # Check fitnesses
             currentBestFitness = 0 #FIX ME
@@ -78,10 +83,104 @@ class GeneticAlgorithm :
         for i in range(self.populationSize) :
             self.population.append(CompressionOperator(self.dataFrame.getProductVectorSize()))
 
-    def select(self, population) :
-        return 0
-        # IMPLEMENT ME
+    # Function:
+    # --------- 
+    #   select()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Selects members of the population to cross over.
+    #
+    #   Relies in the population being sorted by fitness value in DESCENDING order
+    #   at this point
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   population - The population as it stands at the beginning of the GA
+    #                generation
+    # --------------------------------------------------------------------------
+    # Returns:
+    # --------
+    #   A new population of selected members. The new population is double the
+    #   size of the original population. This new population will be made up of
+    #   consecutive parents that are to be crossed over.
+    #
+    #   Ordering Schema:
+    #   ----------------
+    #   [Parent A1][Parent B1] , [Parent A2][Parent B2] , ... , [Parent AN][Parent BN]
+    #
+    #   Each pair of parents A and B for a given selection will be crossed over
+    #   to form a new population that is of the original length indicated by the
+    #   global variable populationSize. All of this is accomplished in the crossover
+    #   function.
+    #
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   This implementation of the selection algorithm uses Roulette Wheel Selection.
+    #   The goal of the algorithm is to select members in a manner that is
+    #   proportionate to their fitness. In short, the fitter members get a larger
+    #   piece of the probability pie; they have a higher likelihood of being
+    #   selected.
+    #
+    #   This algorithm only works in the population at the beginning of it is
+    #   sorted in DESCENDING order
+    #
+    #   More information about selection in general:
+    #   --------------------------------------------
+    #   Roulette Wheel selection is a preferred method in Genetic Algorithms because
+    #   though the members with the best fitness have a greater chance of being 
+    #   selected for crossover, the poorer members still have some chance which is
+    #   important for retaining as much information in the population as possible as
+    #   well as to effectively explore the search space.
+    #
+    #   Useful links:
+    #   -------------
+    #   A good explanation of various selection strategies:
+    #       https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
+    # --------------------------------------------------------------------------
 
+    # --------------------------------------------------------------------------
+    def select(self) :
+
+        selectedPopulation = []
+
+        fitnessSumOfPopulation = 0
+        for compressionOperator in self.population :
+            fitnessSumOfPopulation = fitnessSumOfPopulation + compressionOperator.getFitness()
+
+        for i in range(len(population) * 2) : # Notice the doubling of the population
+            randomFitness = random.uniform(0, fitnessSumOfPopulation)
+            localFitnessSum = 0
+            for j in range(len(self.population)) :
+                localFitnessSum = localFitnessSum + self.population[j].getFitness()
+                if localFitnessSum > randomFitness :
+                    selectedPopulation.append(self.population[j])
+
+        self.population = selectedPopulation
+
+
+
+    # Explanation:
+    # ------------
+    #   Crossover occurs based on the specified crossover rate. Crossover rates are 
+    #   meant to be high and usually always higher than mutation rates. Some 
+    #   researched-backed values are .8 - .99. Crossover is representative of the
+    #   exploratory element of the algorithm. It seeks to deviate enough from the 
+    #   current best solutions in order to find 'distant' solutions that may be 
+    #   better. It does this by recombinating the encodings of the population of 
+    #   solutions with each other. Solutions with a higher fitness have a 
+    #   commensurately better chance of passing on their information. This logic is
+    #   carried out in the select routine. However, there is still a chance that a 
+    #   better solution lies 'closer' to a current poor one. The GA takes this into 
+    #   account by recombinating solutions with each other. This methodology allows
+    #   these properties: a graceful approch to a better solution, consideration
+    #   that a poorer solution may contain effective components, consideration that
+    #   it is logical that better solutions working together will probably result in
+    #   an even better solution, extreme explorations should be mitigated, and 
+    #   exploration should be made on logical (good fitness) bases. Note that the 
+    #   population size passed to this routine should be exactly double that of the
+    #   working population because the generation of N childred requires N * 2 parents.
     def crossover(self, population) :
         return 0
         # IMPLEMENT ME
@@ -156,9 +255,9 @@ class GeneticAlgorithm :
     #   rates and usually very, very small. Some researched-backed values are .01 
     #   to .1 .
     # --------------------------------------------------------------------------
-    def mutate(self, population) :
+    def mutate(self) :
         
-        for compressionOperator in population :
+        for compressionOperator in self.population :
             compressionOperator.mutate()
 
     # Function:
@@ -186,9 +285,9 @@ class GeneticAlgorithm :
     #   function in the Data Frame sets the measured fitness value on the 
     #   Compression Operator that is passed into it.
     # --------------------------------------------------------------------------
-    def evaluatePopulation(self, population) :
+    def evaluatePopulation(self) :
         
-        for compressionOperator in population :
+        for compressionOperator in self.population :
             self.dataFrame.evaluateCompressionOperator(compressionOperator)
 
     # Function:
@@ -214,7 +313,7 @@ class GeneticAlgorithm :
     #   the Selection process in the next iteration of the algorithm.
     # ---------------------------------------------------------------------------
     def sortPopulation(self, population) :
-        return mergeSort(population)
+        self.population = self.mergeSort(population)
 
     # Function:
     # --------- 
@@ -241,14 +340,14 @@ class GeneticAlgorithm :
     #
     #   Merging is done in DESCENDING ORDER
     # ---------------------------------------------------------------------------
-    def mergeSort(self, population) :
+    def mergeSort(self :
 
         if len(population) == 1 :
             return population
 
         mid = len(population) // 2
-        a = population[:mid]
-        b = population[mid:]
+        a = self.population[:mid]
+        b = self.population[mid:]
 
         sortedA = self.mergeSort(a)
         sortedB = self.mergeSort(b)
