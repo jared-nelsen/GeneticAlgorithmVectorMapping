@@ -23,8 +23,6 @@ class GeneticAlgorithm :
     crossoverRate = .9
     mutationRate = .01
     mutationMagnitude = .001
-    tensorValueLow = -99999999
-    tensorValueHigh = 99999999
 
     def __init__(self, dataFrame) :
 
@@ -79,7 +77,14 @@ class GeneticAlgorithm :
     #   know what size the vectors in the Product vector are in order to size 
     #   itself correctly. The Data Frame that is global to this class is the single
     #   source of truth for that value so we pass its value into the Compression 
-    #   Operators as we construct them.
+    #   Operators as we construct them. 
+    # 
+    #   Each Compression Operator also needs to know how deep its backing tensor 
+    #   should be. In the initial implementation this value is static and common
+    #   to all Compression Operators. In a future implementation this value may
+    #   become owned by each Compression Operator and altered through mutation
+    #   and crossover. At this point the single source of truth for this common
+    #   value is also stored in the Data Frame.
     # --------------------------------------------------------------------------
     def generatePopulation(self) :
         
@@ -355,9 +360,7 @@ class GeneticAlgorithm :
         
         for compressionOperator in self.population :
             compressionOperator.mutate(self.mutationRate,
-                                       self.mutationMagnitude,
-                                       self.tensorValueLow,
-                                       self.tensorValueHigh)
+                                       self.mutationMagnitude)
 
     # Function:
     # --------- 

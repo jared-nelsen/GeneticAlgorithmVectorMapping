@@ -35,7 +35,7 @@ class DataFrame :
     # ----------------
     #   The product vectors are rank 1 tensors. They are sized according to how
     #   large the data the user wants to compress is. There are N product vectors
-    #   within the product vector vector. N is also set by the user
+    #   within the product vector vector. N is also set by the user.
     #
     #   Product vector example:
     #   -----------------------
@@ -89,6 +89,13 @@ class DataFrame :
     def loadDataFrameFromFile(self, filePath) :
         return 0
         #Implement Me
+
+    def writeDataToFile(self, filePath) :
+        return 0
+        #Implement Me
+
+    def getProductVectorSize(self) :
+        return self.productVectorSize
 
     def evaluateCompressionOperator(self, compressionOperator) :
         return 0
