@@ -67,6 +67,10 @@ class DataFrame :
         self.stimulusProductPairCount = stimulusProductPairCount
         self.generateRandomDataFrame()
 
+    def evaluateCompressionOperator(self, compressionOperator) :
+        return 0
+        #Implement Me
+
     def generateRandomDataFrame(self) :
 
         # Generate the stimuli
@@ -96,8 +100,4 @@ class DataFrame :
 
     def getProductVectorSize(self) :
         return self.productVectorSize
-
-    def evaluateCompressionOperator(self, compressionOperator) :
-        return 0
-        #Implement Me
 
