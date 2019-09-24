@@ -6,8 +6,8 @@ class CompressionOperator :
     # Configuration
     # -------------
     backingTensorDepth = 10
-    backingTensorValueLow = -99999999
-    backingTensorValueHigh = 99999999
+    backingTensorValueLow = 0.0
+    backingTensorValueHigh = 1.0
 
     # Fitness
     fitness = 99999999
