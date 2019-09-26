@@ -22,7 +22,6 @@ class GeneticAlgorithm :
     # Hyperparameters
     crossoverRate = .9
     mutationRate = .01
-    mutationMagnitude = .001
 
     def __init__(self, dataFrame) :
 
@@ -359,8 +358,7 @@ class GeneticAlgorithm :
     def mutate(self) :
         
         for compressionOperator in self.population :
-            compressionOperator.mutate(self.mutationRate,
-                                       self.mutationMagnitude)
+            compressionOperator.mutate(self.mutationRate)
 
     # Function:
     # --------- 

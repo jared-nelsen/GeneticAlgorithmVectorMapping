@@ -10,6 +10,7 @@ class CompressionOperator :
     backingTensorDepth = 10
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
+    mutationMagnitude = .000001
 
     # Fitness
     fitness = 99999999
@@ -85,9 +86,9 @@ class CompressionOperator :
     # --------------------------------------------------------------------------
     def generateTFOperation(self) :
         
-        inputPlaceholder = tf.placeholder(tf.float32, shape=(1, self.productVectorSize))
+        inputPlaceholder = tf.placeholder(tf.float32)
 
-        operation = tf.matmul(inputPlaceholder, self.backingTensor[0])
+        operation = tf.multiply(inputPlaceholder, self.backingTensor[0])
 
         for index in range(1, len(self.backingTensor)) :
             operation = tf.matmul(operation, self.backingTensor[index])
