@@ -68,8 +68,41 @@ class DataFrame :
         self.generateRandomDataFrame()
 
     def evaluateCompressionOperator(self, compressionOperator) :
-        return 0
-        #Implement Me
+        
+        # Generate the Tensorflow operation for the given
+        # Compression operator
+        inputPlaceholder = tf.placeholder(tf.float32)
+        mappingOperation = compressionOperator.generateTFOperation(inputPlaceholder)
+
+        # Designate a list of errors that are the result of a stimulus
+        # being applied to the mapping operation and measured against
+        # the corresponding product vectors
+        stimulusProductPairErrors = []
+
+        # Open the tensorflow session
+        with tf.Session() as sess:
+
+            # For each stimulus-product vector pair
+            for pairIndex in range(len(self.stimulusVector)) :
+
+                stimulus = self.stimulusVector[pairIndex]
+                productVector = self.productVectors[pairIndex]
+
+                # Run the mapping operator with the given stimulus
+                resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
+
+                # Compare the error between the resultant product and the given product
+                stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+
+                # Record the error
+                stimulusProductPairErrors.append(stimulusProductPairError)
+
+            # Compute the sum total of errors in this compression operator evaluation operation
+            sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
+
+            # Set the sum of the errors over this compression operators as the fitness of
+            # the compression operator
+            compressionOperator.setFitness(sumOfErrors)
 
     def generateRandomDataFrame(self) :
 
@@ -78,7 +111,9 @@ class DataFrame :
         for i in range(self.stimulusProductPairCount) :
 
             stimulus = []
-            stimulus.append(stimulusValue)
+
+            # Multiply by 1.0 to make it a float
+            stimulus.append(stimulusValue * 1.0)
 
             self.stimulusVector.append(stimulus)
 
@@ -88,7 +123,8 @@ class DataFrame :
         for i in range(self.stimulusProductPairCount) :
             productVector = []
             for j in range(self.productVectorSize) :
-                productVector.append(random.randint(self.productValueLow, self.productValueHigh))
+                # Generate a random int but multiply it by 1.0 to make it a float
+                productVector.append(random.randint(self.productValueLow, self.productValueHigh) * 1.0)
 
     def loadDataFrameFromFile(self, filePath) :
         return 0

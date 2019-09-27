@@ -65,7 +65,8 @@ class CompressionOperator :
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
-    #   None
+    #   inputPlaceholder - A Tensorflow placeholder object that will be loaded
+    #                      with the stimulus value
     # --------------------------------------------------------------------------
     # Result:
     # --------
@@ -84,16 +85,14 @@ class CompressionOperator :
     #   is simply a series of matrix multiplication operations. This function
     #   uses the Tensorflow API to build this series of matrix multiplications.
     # --------------------------------------------------------------------------
-    def generateTFOperation(self) :
-        
-        inputPlaceholder = tf.placeholder(tf.float32)
+    def generateTFOperation(self, inputPlaceholder) :
 
-        operation = tf.multiply(inputPlaceholder, self.backingTensor[0])
+        mappingOperation = tf.multiply(inputPlaceholder, self.backingTensor[0])
 
         for index in range(1, len(self.backingTensor)) :
-            operation = tf.matmul(operation, self.backingTensor[index])
+            mappingOperation = tf.matmul(mappingOperation, self.backingTensor[index])
 
-        return operation
+        return mappingOperation
 
     def setFitness(self, fitness) :
         self.fitness = fitness
