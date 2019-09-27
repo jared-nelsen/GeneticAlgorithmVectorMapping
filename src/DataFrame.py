@@ -1,6 +1,8 @@
 
 import random as random
 
+import tensorflow as tf
+
 import CompressionOperator
 
 class DataFrame :
@@ -71,7 +73,7 @@ class DataFrame :
         
         # Generate the Tensorflow operation for the given
         # Compression operator
-        inputPlaceholder = tf.placeholder(tf.float32)
+        inputPlaceholder = tf.compat.v1.placeholder(tf.float32)
         mappingOperation = compressionOperator.generateTFOperation(inputPlaceholder)
 
         # Designate a list of errors that are the result of a stimulus
@@ -80,7 +82,7 @@ class DataFrame :
         stimulusProductPairErrors = []
 
         # Open the tensorflow session
-        with tf.Session() as sess:
+        with tf.compat.v1.Session() as sess:
 
             # For each stimulus-product vector pair
             for pairIndex in range(len(self.stimulusVector)) :
@@ -92,17 +94,17 @@ class DataFrame :
                 resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
 
                 # Compare the error between the resultant product and the given product
-                stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+                stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
                 # Record the error
                 stimulusProductPairErrors.append(stimulusProductPairError)
 
-            # Compute the sum total of errors in this compression operator evaluation operation
-            sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
+                # Compute the sum total of errors in this compression operator evaluation operation
+                sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
 
-            # Set the sum of the errors over this compression operators as the fitness of
-            # the compression operator
-            compressionOperator.setFitness(sumOfErrors)
+                # Set the sum of the errors over this compression operators as the fitness of
+                # the compression operator
+                compressionOperator.setFitness(sumOfErrors.eval())
 
     def generateRandomDataFrame(self) :
 
@@ -125,6 +127,7 @@ class DataFrame :
             for j in range(self.productVectorSize) :
                 # Generate a random int but multiply it by 1.0 to make it a float
                 productVector.append(random.randint(self.productValueLow, self.productValueHigh) * 1.0)
+            self.productVectors.append(productVector)
 
     def loadDataFrameFromFile(self, filePath) :
         return 0

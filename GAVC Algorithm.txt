@@ -8,7 +8,7 @@ Project Start Date: 9-15-19
 
 Simple Algorithm Premise:
 -------------------------
-There exists 2 vectors in a Data Frame. One is named the "Stimulus Vector", and one is named the "Product Vector". The Stimulus vector
+There exist 2 vectors in a Data Frame. One is named the "Stimulus Vector", and one is named the "Product Vector". The Stimulus vector
 is a one dimensional vector whose N elements are Tensors of rank 1. The Product vector is a vector whose N elements are
 Tensors of rank 2. In vector terms, the Stimulus vector is made up of N vectors whose length are 1 and the Product vector
 is made up of N vectors whose length is variable.
@@ -32,3 +32,12 @@ Tools
 -----
 Python will be used for the initial implementation. It was chosen because it has good APIs for Tensorflow. Tensorflow was
 chosen after doing research on the best way to work with matrix and Tensor computation on the GPU.
+
+Environment Setup
+-----------------
+1. Create the folder ~/.virtualenvs
+2. Follow Tensorflow installation here: https://www.tensorflow.org/install/pip
+   - For creating a virtual environment use this command:
+      virtualenv --system-site-packages -p python3 gavcVenv
+3. Use command pallete in vscode to activate gavcVenv by using Python: select interpreter
+4. Run this to fix Numpy Version: pip install "numpy<1.17"

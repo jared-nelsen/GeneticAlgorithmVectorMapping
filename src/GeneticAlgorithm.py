@@ -11,7 +11,7 @@ class GeneticAlgorithm :
 
     # Population
     population = []
-    populationSize = 100
+    populationSize = 10
     
     # Fitnesses
     bestFitness = 99999999
@@ -38,6 +38,7 @@ class GeneticAlgorithm :
         # Main GA algortihm loop
         generationCount = 0
         while generationCount < self.maxGenerations :
+            print("Generation ", generationCount, "...")
 
             # Run GA functions 
             self.select()
@@ -50,6 +51,7 @@ class GeneticAlgorithm :
             currentBestFitness = self.population[-1].getFitness()
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
+                print("Generation: ", generationCount, " Best Fitness = ", self.bestFitness)
                 
             generationCount = generationCount + 1
 
@@ -160,6 +162,7 @@ class GeneticAlgorithm :
                 localFitnessSum = localFitnessSum + self.population[j].getFitness()
                 if localFitnessSum > randomFitness :
                     selectedPopulation.append(self.population[j])
+                    break
 
         self.population = selectedPopulation
 
@@ -229,7 +232,7 @@ class GeneticAlgorithm :
 
         crossedOverPopulation = []
         
-        for i in range(len(self.population)) :
+        for i in range(len(self.population) - 1) :
 
             parentA = self.population[i]
             i = i + 1

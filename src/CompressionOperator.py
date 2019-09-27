@@ -35,12 +35,16 @@ class CompressionOperator :
 
     def generateRandomBackingTensor(self) :
 
+        #I DONT KNOW WHY THIS WORKS!!!
+        self.backingTensor.clear()
+
         for i in range(self.backingTensorDepth) :
             backingTensorLayer = []
-            for i in range(self.productVectorSize) :
+            for j in range(self.productVectorSize) :
                 backingTensorLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
+            self.backingTensor.append(backingTensorLayer)
 
-    def mutate(self, mutationRate, mutationMagnitude) :
+    def mutate(self, mutationRate) :
         
         for i in range(len(self.backingTensor)) :
             rank1Tensor = self.backingTensor[i]
@@ -50,9 +54,9 @@ class CompressionOperator :
                         rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                     else :
                         if random.uniform(0, 1) < .5 :
-                            rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
+                            rank1Tensor[j] = rank1Tensor[j] + self.mutationMagnitude
                         else :
-                            rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
+                            rank1Tensor[j] = rank1Tensor[j] + self.mutationMagnitude
 
     # Function:
     # --------- 
@@ -87,10 +91,12 @@ class CompressionOperator :
     # --------------------------------------------------------------------------
     def generateTFOperation(self, inputPlaceholder) :
 
+        print("Help! This function fails on second generation!")
+
         mappingOperation = tf.multiply(inputPlaceholder, self.backingTensor[0])
 
         for index in range(1, len(self.backingTensor)) :
-            mappingOperation = tf.matmul(mappingOperation, self.backingTensor[index])
+            mappingOperation = tf.multiply(mappingOperation, self.backingTensor[index])
 
         return mappingOperation
 
@@ -102,6 +108,9 @@ class CompressionOperator :
 
     def setProductVectorSize(self, productVectorSize) :
         self.productVectorSize = productVectorSize
+
+    def getProductVectorSize(self) :
+        return self.productVectorSize
 
     def getBackingTensor(self) :
         return self.backingTensor
