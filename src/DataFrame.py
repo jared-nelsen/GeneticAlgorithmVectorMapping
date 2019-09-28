@@ -105,12 +105,15 @@ class DataFrame :
                 # Record the error
                 stimulusProductPairErrors.append(stimulusProductPairError)
 
-                # Compute the sum total of errors in this compression operator evaluation operation
-                sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
+            # Compute the sum total of errors in this compression operator evaluation operation
+            sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
 
-                # Set the sum of the errors over this compression operators as the fitness of
-                # the compression operator
-                compressionOperator.setFitness(sumOfErrors.eval())
+            # Set the sum of the errors over this compression operators as the fitness of
+            # the compression operator
+            compressionOperator.setFitness(sumOfErrors.eval())
+
+        # Reset the default Tensorflow graph
+        tf.reset_default_graph()
 
     def generateRandomDataFrame(self) :
 
