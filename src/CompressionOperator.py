@@ -91,8 +91,6 @@ class CompressionOperator :
     # --------------------------------------------------------------------------
     def generateTFOperation(self, inputPlaceholder) :
 
-        print("Help! This function fails on second generation!")
-
         mappingOperation = tf.multiply(inputPlaceholder, self.backingTensor[0])
 
         for index in range(1, len(self.backingTensor)) :

@@ -32,15 +32,15 @@ class GeneticAlgorithm :
 
         # Generate the population
         self.generatePopulation()
-        # Evaluate it for the first time
+        # Evaluate and sort it for the first time
         self.evaluatePopulation()
+        self.sortPopulation()
         
         # Main GA algortihm loop
         generationCount = 0
         while generationCount < self.maxGenerations :
-            print("Generation ", generationCount, "...")
 
-            # Run GA functions 
+            # Run GA functions
             self.select()
             self.crossover()
             self.mutate()
@@ -49,9 +49,10 @@ class GeneticAlgorithm :
 
             # Check fitnesses
             currentBestFitness = self.population[-1].getFitness()
+            print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
-                print("Generation: ", generationCount, " Best Fitness = ", self.bestFitness)
+                # print("Generation: ", generationCount, " Best Fitness = ", self.bestFitness)
                 
             generationCount = generationCount + 1
 
@@ -242,7 +243,7 @@ class GeneticAlgorithm :
             parentABackingTensor = parentA.getBackingTensor()
             parentBBackingTensor = parentB.getBackingTensor()
 
-            for j in range(len(newPopulationMemberBackingTensor)) :
+            for j in range(len(parentABackingTensor)) :
 
                 newPopulationMemberBackingTensorRank1TensorMember = []
                 parentABackingTensorRank1TensorMember = parentABackingTensor[j]
@@ -265,7 +266,6 @@ class GeneticAlgorithm :
 
 
         self.population = crossedOverPopulation
-
 
     # Function:
     # --------- 

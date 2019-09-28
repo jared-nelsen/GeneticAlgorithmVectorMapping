@@ -2,8 +2,11 @@
 from GeneticAlgorithm import GeneticAlgorithm
 from DataFrame import DataFrame
 
+  # Silence Tensorflow
+import tensorflow as tf
+tf.disable_v2_behavior()
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Silence Tensorflow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def runRandomGavcInstance() :
 
