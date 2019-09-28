@@ -11,7 +11,7 @@ class DataFrame :
     # --------------
     stimulusProductPairCount = 0
     productValueLow = 0
-    productValueHigh = 256
+    productValueHigh = 257
 
     # Stimuli:
     # --------
@@ -92,6 +92,12 @@ class DataFrame :
 
                 # Run the mapping operator with the given stimulus
                 resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
+
+                # Scale the values by the highest possible value of the product vector
+                resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
+
+                # Floor the values so as to compare only integers
+                resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
                 # Compare the error between the resultant product and the given product
                 stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
