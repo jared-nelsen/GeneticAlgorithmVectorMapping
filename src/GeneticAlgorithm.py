@@ -47,6 +47,8 @@ class GeneticAlgorithm :
             self.evaluatePopulation()
             self.sortPopulation()
 
+            print(len(self.population))
+
             # Check fitnesses
             currentBestFitness = self.population[-1].getFitness()
             print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
@@ -233,7 +235,7 @@ class GeneticAlgorithm :
 
         crossedOverPopulation = []
         
-        for i in range(len(self.population) - 1) :
+        for i in range(int(len(self.population) / 2)) :
 
             parentA = self.population[i]
             i = i + 1
