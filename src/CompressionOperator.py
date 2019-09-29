@@ -7,10 +7,10 @@ class CompressionOperator :
 
     # Configuration
     # -------------
-    backingTensorDepth = 10
+    backingTensorDepth = 2
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .000001
+    mutationMagnitude = .0001
 
     # Fitness
     fitness = 99999999

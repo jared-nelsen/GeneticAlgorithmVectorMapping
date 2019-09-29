@@ -17,11 +17,11 @@ class GeneticAlgorithm :
     bestFitness = 99999999
 
     # Generations
-    maxGenerations = 1000
+    maxGenerations = 100000
 
     # Hyperparameters
-    crossoverRate = .9
-    mutationRate = .01
+    crossoverRate = .05
+    mutationRate = .5
 
     def __init__(self, dataFrame) :
 
@@ -47,14 +47,20 @@ class GeneticAlgorithm :
             self.evaluatePopulation()
             self.sortPopulation()
 
-            print(len(self.population))
-
             # Check fitnesses
             currentBestFitness = self.population[-1].getFitness()
-            print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
+            #print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
-                # print("Generation: ", generationCount, " Best Fitness = ", self.bestFitness)
+                #print(" ------------------------------ New Best Fitness = ", self.bestFitness)
+
+            avgFitness = 0
+            for c in self.population :
+                avgFitness = avgFitness + c.getFitness()
+                
+            avgFitness = avgFitness / len(self.population)
+
+            print(avgFitness)
                 
             generationCount = generationCount + 1
 
@@ -154,20 +160,35 @@ class GeneticAlgorithm :
 
         selectedPopulation = []
 
-        fitnessSumOfPopulation = 0
+        # Load the fitness values from the population
+        fitnessValues = []
         for compressionOperator in self.population :
-            fitnessSumOfPopulation = fitnessSumOfPopulation + compressionOperator.getFitness()
+            fitnessValues.append(compressionOperator.getFitness())
 
-        for i in range(len(self.population) * 2) : # Notice the doubling of the population
-            randomFitness = random.uniform(0, fitnessSumOfPopulation)
-            localFitnessSum = 0
-            for j in range(len(self.population)) :
-                localFitnessSum = localFitnessSum + self.population[j].getFitness()
-                if localFitnessSum > randomFitness :
-                    selectedPopulation.append(self.population[j])
-                    break
+        # Sum the fitnesses of the population
+        populationFitnessSum = 0
+        for value in fitnessValues :
+            populationFitnessSum = populationFitnessSum + value
+
+        # Compute normalized fitness values
+        for i in range(len(fitnessValues)) :
+            fitnessValues[i] = fitnessValues[i] / populationFitnessSum
+
+        # Compute cumulative normalized fitness values
+        for i in reversed(range(len(fitnessValues) - 1)) :
+            fitnessValues[i] = fitnessValues[i] + fitnessValues[i + 1]
+
+        # Perform roulette wheel selection
+        for i in reversed(range(len(self.population) * 2)) :
+            randomFitness = random.uniform(0.0, 1.0)
+            k = len(fitnessValues) - 1
+            while randomFitness > fitnessValues[k] :
+                k = k - 1
+            selectedPopulation.append(self.population[k])
 
         self.population = selectedPopulation
+            
+            
 
     # Function:
     # --------- 
