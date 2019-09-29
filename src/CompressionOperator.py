@@ -10,7 +10,7 @@ class CompressionOperator :
     backingTensorDepth = 5
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .0001
+    mutationMagnitude = .001
 
     # Fitness
     fitness = 99999999
@@ -50,13 +50,13 @@ class CompressionOperator :
             rank1Tensor = self.backingTensor[i]
             for j in range(len(rank1Tensor)) :
                 if random.uniform(0, 1) < mutationRate :
-                    if random.uniform(0, 1) < .5 :
+                    if random.uniform(0, 1) < .1 :
                         rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                     else :
                         if random.uniform(0, 1) < .5 :
                             rank1Tensor[j] = rank1Tensor[j] + self.mutationMagnitude
                         else :
-                            rank1Tensor[j] = rank1Tensor[j] + self.mutationMagnitude
+                            rank1Tensor[j] = rank1Tensor[j] - self.mutationMagnitude
 
     # Function:
     # --------- 

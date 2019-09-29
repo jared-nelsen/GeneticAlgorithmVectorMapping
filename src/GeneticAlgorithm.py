@@ -11,7 +11,7 @@ class GeneticAlgorithm :
 
     # Population
     population = []
-    populationSize = 50
+    populationSize = 10
     
     # Fitnesses
     bestFitness = 99999999
@@ -20,8 +20,12 @@ class GeneticAlgorithm :
     maxGenerations = 10000000
 
     # Hyperparameters
-    crossoverRate = .05
-    mutationRate = .5
+    crossoverRate = .5
+    mutationRate = .9
+
+    # Elitism
+    elitismWeight = .3
+    elites = []
 
     def __init__(self, dataFrame) :
 
@@ -44,12 +48,14 @@ class GeneticAlgorithm :
             self.select()
             self.crossover()
             self.mutate()
+            self.injectElites()
             self.evaluatePopulation()
             self.sortPopulation()
+            self.saveElites()
 
             # Check fitnesses
             currentBestFitness = self.population[-1].getFitness()
-            #print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
+            print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
                 print(" ------------------------------ New Best Fitness = ", self.bestFitness)
@@ -172,12 +178,15 @@ class GeneticAlgorithm :
 
         # Perform roulette wheel selection
         for i in reversed(range(len(self.population) * 2)) :
-            randomFitness = random.uniform(0.0, 1.0)
-            print(randomFitness)
+            randomFitness = random.uniform(0.0, 0.08)
+
             k = len(fitnessValues) - 1
             while randomFitness > fitnessValues[k] :
                 k = k - 1
             selectedPopulation.append(self.population[k])
+
+        #for c in selectedPopulation :
+         #   print(c.getFitness(), end = "")
 
         self.population = selectedPopulation
 
@@ -405,6 +414,69 @@ class GeneticAlgorithm :
         
         for compressionOperator in self.population :
             self.dataFrame.evaluateCompressionOperator(compressionOperator)
+
+    # Function:
+    # --------- 
+    #   saveElites()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Saves the elites of a run to be injected in the next generation.
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   None
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   The global population of elites has been loaded with the best members
+    #   of the previous generation. The number of elites saved is controlled
+    #   by the global parameter elitismWeight.
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   Elitism boosts the convergence of the algorithm by continually injecting
+    #   the best genetic material into the population at every generation. We
+    #   save the best few members of the population in this function to be
+    #   injected in the next generation.
+    # --------------------------------------------------------------------------
+    def saveElites(self) :
+
+        self.elites.clear()
+
+        numberToSave = int(self.elitismWeight * self.populationSize)
+
+        startSavingPoint = len(self.population) - numberToSave
+        for i in range(startSavingPoint, len(self.population)) :
+            self.elites.append(self.population[i].clone())
+
+   # Function:
+    # --------- 
+    #   injectElites()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Injects the elites from the last generation into the current population.
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   None
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   The global population has been injected with the elites from the last
+    #   generation.
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   Elitism boosts the convergence of the algorithm by continually injecting
+    #   the best genetic material into the population at every generation. We
+    #   inject the elites into the global population in this function
+    # --------------------------------------------------------------------------
+    def injectElites(self) :
+
+        for i in range(len(self.elites)) :
+            self.population[i] = self.elites[i]
 
     # Function:
     # --------- 
