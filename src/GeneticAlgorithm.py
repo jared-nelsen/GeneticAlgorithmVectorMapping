@@ -11,13 +11,13 @@ class GeneticAlgorithm :
 
     # Population
     population = []
-    populationSize = 10
+    populationSize = 50
     
     # Fitnesses
     bestFitness = 99999999
 
     # Generations
-    maxGenerations = 100000
+    maxGenerations = 10000000
 
     # Hyperparameters
     crossoverRate = .05
@@ -52,15 +52,7 @@ class GeneticAlgorithm :
             #print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
-                #print(" ------------------------------ New Best Fitness = ", self.bestFitness)
-
-            avgFitness = 0
-            for c in self.population :
-                avgFitness = avgFitness + c.getFitness()
-                
-            avgFitness = avgFitness / len(self.population)
-
-            print(avgFitness)
+                print(" ------------------------------ New Best Fitness = ", self.bestFitness)
                 
             generationCount = generationCount + 1
 
@@ -181,14 +173,13 @@ class GeneticAlgorithm :
         # Perform roulette wheel selection
         for i in reversed(range(len(self.population) * 2)) :
             randomFitness = random.uniform(0.0, 1.0)
+            print(randomFitness)
             k = len(fitnessValues) - 1
             while randomFitness > fitnessValues[k] :
                 k = k - 1
             selectedPopulation.append(self.population[k])
 
         self.population = selectedPopulation
-            
-            
 
     # Function:
     # --------- 
@@ -286,7 +277,6 @@ class GeneticAlgorithm :
             newPopulationMember.setBackingTensor(newPopulationMemberBackingTensor)
 
             crossedOverPopulation.append(newPopulationMember)
-
 
         self.population = crossedOverPopulation
 

@@ -7,7 +7,7 @@ class CompressionOperator :
 
     # Configuration
     # -------------
-    backingTensorDepth = 2
+    backingTensorDepth = 5
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
     mutationMagnitude = .0001
@@ -23,7 +23,7 @@ class CompressionOperator :
     # --------------
     #   The backing tensor is made up of a set of rank 1 tensors (vectors).
     #   Their dimensions are always (in this implementation) 1 X N where
-    #   N is the product vector size.
+    #   N is the product vector size.0
     #   The backing tensor can also be thought of as a rank 2 tensor where
     #   The Z dimension is described by the successive ordering of the set
     #   of rank 1 tensors.
