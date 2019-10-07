@@ -7,10 +7,10 @@ class CompressionOperator :
 
     # Configuration
     # -------------
-    backingTensorDepth = 5
+    backingTensorDepth = 3
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .001
+    mutationMagnitude = .000001
 
     # Fitness
     fitness = 99999999
@@ -44,13 +44,32 @@ class CompressionOperator :
                 backingTensorLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             self.backingTensor.append(backingTensorLayer)
 
-    def mutate(self, mutationRate) :
-        
+    def mutate(self, mutationRate, topologicalMutationRate, valueReplacementBias) :
+
+        # Randomly add a new layer
+        addALayerChance = random.uniform(0, 1)
+        if addALayerChance < topologicalMutationRate :
+
+            newLayer = []
+            for i in range(self.productVectorSize) :
+                newLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
+
+            randomInsertionIndex = random.randint(0, len(self.backingTensor) - 1)
+            self.backingTensor.insert(randomInsertionIndex, newLayer)
+            
+        # Randomly remove a layer
+        removeALayerChance = random.uniform(0, 1)
+        if removeALayerChance < topologicalMutationRate and len(self.backingTensor) > 2:
+
+            randomDeletionIndex = random.randint(0, len(self.backingTensor) - 1)
+            del self.backingTensor[randomDeletionIndex]
+            
+        # Randomly mutate the values in the backing tensor
         for i in range(len(self.backingTensor)) :
             rank1Tensor = self.backingTensor[i]
             for j in range(len(rank1Tensor)) :
                 if random.uniform(0, 1) < mutationRate :
-                    if random.uniform(0, 1) < .1 :
+                    if random.uniform(0, 1) < valueReplacementBias :
                         rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                     else :
                         if random.uniform(0, 1) < .5 :

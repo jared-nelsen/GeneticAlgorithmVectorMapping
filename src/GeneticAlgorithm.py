@@ -11,7 +11,7 @@ class GeneticAlgorithm :
 
     # Population
     population = []
-    populationSize = 10
+    populationSize = 25
     
     # Fitnesses
     bestFitness = 99999999
@@ -20,9 +20,11 @@ class GeneticAlgorithm :
     maxGenerations = 10000000
 
     # Hyperparameters
-    crossoverRate = .5
+    crossoverRate = .05
     mutationRate = .9
-
+    topologicalMutationRate = .05
+    valueReplacementBias = .1
+    
     # Elitism
     elitismWeight = .3
     elites = []
@@ -42,7 +44,7 @@ class GeneticAlgorithm :
         
         # Main GA algortihm loop
         generationCount = 0
-        while generationCount < self.maxGenerations :
+        while generationCount < self.maxGenerations and self.population[-1].getFitness() > 0:
 
             # Run GA functions
             self.select()
@@ -59,7 +61,19 @@ class GeneticAlgorithm :
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
                 print(" ------------------------------ New Best Fitness = ", self.bestFitness)
-                
+
+                # Replace all members with best member
+                bestMember = self.population[-1]
+                self.population.clear()
+                for i in range(self.populationSize) :
+                    self.population.append(bestMember.clone())
+
+            # Print tensor lengths
+            for m in self.population :
+                print("[", len(m.backingTensor), "]", end = "")
+            print()
+            
+            
             generationCount = generationCount + 1
 
     # Function:
@@ -253,7 +267,7 @@ class GeneticAlgorithm :
     #
     # --------------------------------------------------------------------------
     def crossover(self) :
-
+        
         crossedOverPopulation = []
         
         for i in range(int(len(self.population) / 2)) :
@@ -266,6 +280,13 @@ class GeneticAlgorithm :
             parentABackingTensor = parentA.getBackingTensor()
             parentBBackingTensor = parentB.getBackingTensor()
 
+            # Set the primary parent to be the one with the longer shorter tensor
+            if len(parentABackingTensor) > len(parentBBackingTensor) :
+                temp = parentABackingTensor
+                parentABackingTensor = parentBBackingTensor
+                parentBBackingTensor = temp
+            
+            # Crossover values between the two parents
             for j in range(len(parentABackingTensor)) :
 
                 newPopulationMemberBackingTensorRank1TensorMember = []
@@ -310,7 +331,7 @@ class GeneticAlgorithm :
     #   Mutates the numerical and shape features of the Compression Operators in
     #   the population.
     #
-    #   The current implementation of the mutation algortithm can:
+#   The current implementation of the mutation algortithm can:
     #   ----------------------------------------------------------
     #   1. Mutate the values in the Compression Operator Tensor
     #
@@ -383,8 +404,9 @@ class GeneticAlgorithm :
     def mutate(self) :
         
         for compressionOperator in self.population :
-            compressionOperator.mutate(self.mutationRate)
-
+            compressionOperator.mutate(self.mutationRate,
+                                       self.topologicalMutationRate,
+                                       self.valueReplacementBias)
     # Function:
     # --------- 
     #   evaluatePopulation()

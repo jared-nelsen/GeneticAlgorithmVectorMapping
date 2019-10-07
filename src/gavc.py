@@ -11,7 +11,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 def runRandomGavcInstance() :
 
     productVectorSize = 10
-    stimulusProductPairCount = 10
+    stimulusProductPairCount = 1
 
     print("Running GAVC...")
 
@@ -24,7 +24,7 @@ def runRandomGavcInstance() :
     print("\nSetting up the Genetic Algorithm...")
     
     ga = GeneticAlgorithm(dataFrame)
-
+    
     print("\nGenetic Algorithm set up complete!")
 
     print("\nRunning this instance of GAVC...\n")
@@ -42,7 +42,6 @@ def runGavc() :
 
     if option == "1" :
         runRandomGavcInstance()
-
 
 if __name__ == '__main__':
     runGavc()
