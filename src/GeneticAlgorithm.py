@@ -62,7 +62,7 @@ class GeneticAlgorithm :
                 self.bestFitness = currentBestFitness
                 print(" --------------------------------- New Best Fitness = ", self.bestFitness)
 
-                self.replacePopulationWithBestMember(self.population[-1])
+            self.replacePopulationWithBestMember(self.population[-1])
             
             generationCount = generationCount + 1
 
