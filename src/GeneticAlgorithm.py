@@ -20,7 +20,7 @@ class GeneticAlgorithm :
     maxGenerations = 10000000
 
     # Hyperparameters
-    crossoverRate = .05
+    crossoverRate = .5
     mutationRate = .9
     topologicalMutationRate = .05
     valueReplacementBias = .1
@@ -60,19 +60,9 @@ class GeneticAlgorithm :
             print("Generation ", generationCount, " : Fitness = ", currentBestFitness)
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
-                print(" ------------------------------ New Best Fitness = ", self.bestFitness)
+                print(" --------------------------------- New Best Fitness = ", self.bestFitness)
 
-                # Replace all members with best member
-                bestMember = self.population[-1]
-                self.population.clear()
-                for i in range(self.populationSize) :
-                    self.population.append(bestMember.clone())
-
-            # Print tensor lengths
-            for m in self.population :
-                print("[", len(m.backingTensor), "]", end = "")
-            print()
-            
+                self.replacePopulationWithBestMember(self.population[-1])
             
             generationCount = generationCount + 1
 
@@ -331,7 +321,7 @@ class GeneticAlgorithm :
     #   Mutates the numerical and shape features of the Compression Operators in
     #   the population.
     #
-#   The current implementation of the mutation algortithm can:
+    #   The current implementation of the mutation algortithm can:
     #   ----------------------------------------------------------
     #   1. Mutate the values in the Compression Operator Tensor
     #
@@ -472,7 +462,7 @@ class GeneticAlgorithm :
         for i in range(startSavingPoint, len(self.population)) :
             self.elites.append(self.population[i].clone())
 
-   # Function:
+    # Function:
     # --------- 
     #   injectElites()
     # --------------------------------------------------------------------------
@@ -500,6 +490,7 @@ class GeneticAlgorithm :
         for i in range(len(self.elites)) :
             self.population[i] = self.elites[i]
 
+    
     # Function:
     # --------- 
     #   sortPopulation()
@@ -525,6 +516,35 @@ class GeneticAlgorithm :
     def sortPopulation(self) :
         self.population = self.mergeSort(self.population)
 
+    # Function:
+    # --------- 
+    #   replacePopulationWithBestMember()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Wipes out the current population and replaces it with a population
+    #   constituted of just the best member from the previous generation.
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   The best member from the previous generation.
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   The global population has been replaced by one comprised of only the
+    #   best member from the last generation.
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   In order to accelerate convergence we can replace the population with
+    #   the fittest member when a new best fitness is found or when a new
+    #   generation fails to produce a new best fitness.
+    # --------------------------------------------------------------------------
+    def replacePopulationWithBestMember(self, bestMember) :
+        self.population.clear()
+        for i in range(self.populationSize) :
+            self.population.append(bestMember.clone())
+        
     # Function:
     # --------- 
     #   mergeSort()
