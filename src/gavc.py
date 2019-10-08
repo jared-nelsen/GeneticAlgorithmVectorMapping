@@ -10,8 +10,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def runRandomGavcInstance() :
 
-    productVectorSize = 10
-    stimulusProductPairCount = 3
+    productVectorSize = 3
+    stimulusProductPairCount = 1
 
     print("Running GAVC...")
 

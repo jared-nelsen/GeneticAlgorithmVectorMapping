@@ -70,50 +70,50 @@ class DataFrame :
         self.generateRandomDataFrame()
 
     def evaluateCompressionOperator(self, compressionOperator) :
-        
-        # Generate the Tensorflow operation for the given
-        # Compression operator
-        inputPlaceholder = tf.compat.v1.placeholder(tf.float32)
-        mappingOperation = compressionOperator.generateTFOperation(inputPlaceholder)
 
+        tf.enable_eager_execution()
+        
         # Designate a list of errors that are the result of a stimulus
         # being applied to the mapping operation and measured against
         # the corresponding product vectors
         stimulusProductPairErrors = []
 
-        # Open the tensorflow session
-        with tf.compat.v1.Session() as sess:
+        backingTensor = compressionOperator.backingTensor
 
-            # For each stimulus-product vector pair
-            for pairIndex in range(len(self.stimulusVector)) :
+        # For each stimulus-product vector pair
+        for pairIndex in range(len(self.stimulusVector)) :
 
-                stimulus = self.stimulusVector[pairIndex]
-                productVector = self.productVectors[pairIndex]
+            stimulus = self.stimulusVector[pairIndex]
+            productVector = self.productVectors[pairIndex]
 
-                # Run the mapping operator with the given stimulus
-                resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
+            # Run the mapping operator with the given stimulus
+            # resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
+            resultantMappingOperationProduct = tf.multiply(stimulus, backingTensor[0])
+            for index in range(1, len(backingTensor)) :
+                resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, backingTensor[index])
+            
+            # Scale the values by the highest possible value of the product vector
+            resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
 
-                # Scale the values by the highest possible value of the product vector
-                resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
+            # Floor the values so as to compare only integers
+            resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
-                # Floor the values so as to compare only integers
-                resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
+            # Compare the error between the resultant product and the given product
+            stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
-                # Compare the error between the resultant product and the given product
-                stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+            # Record the error
+            stimulusProductPairErrors.append(stimulusProductPairError)
 
-                # Record the error
-                stimulusProductPairErrors.append(stimulusProductPairError)
+        # Compute the sum total of errors in this compression operator evaluation operation
+        sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
 
-            # Compute the sum total of errors in this compression operator evaluation operation
-            sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
-
-            # Set the sum of the errors over this compression operators as the fitness of
-            # the compression operator
-            compressionOperator.setFitness(sumOfErrors.eval())
+        # Set the sum of the errors over this compression operators as the fitness of
+        # the compression operator
+        sumOfErrors = sumOfErrors.numpy()
+        compressionOperator.setFitness(sumOfErrors)
 
         # Reset the default Tensorflow graph
-        tf.reset_default_graph()
+        # tf.reset_default_graph()
 
     def generateRandomDataFrame(self) :
 
