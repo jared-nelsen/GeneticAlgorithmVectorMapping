@@ -71,7 +71,7 @@ class DataFrame :
 
     def evaluateCompressionOperator(self, compressionOperator) :
 
-        tf.enable_eager_execution()
+        tf.compat.v1.enable_eager_execution()
         
         # Designate a list of errors that are the result of a stimulus
         # being applied to the mapping operation and measured against
@@ -99,7 +99,7 @@ class DataFrame :
             resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
             # Compare the error between the resultant product and the given product
-            stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+            stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
             # Record the error
             stimulusProductPairErrors.append(stimulusProductPairError)
