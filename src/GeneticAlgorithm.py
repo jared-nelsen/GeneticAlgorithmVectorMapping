@@ -1,5 +1,8 @@
 
+import sys
 import random as random
+from itertools import product
+from multiprocessing import Pool, Queue, cpu_count
 
 from DataFrame import DataFrame
 from CompressionOperator import CompressionOperator
@@ -11,7 +14,7 @@ class GeneticAlgorithm :
 
     # Population
     population = []
-    populationSize = 25
+    populationSize = 16
     
     # Fitnesses
     bestFitness = 99999999
@@ -40,6 +43,7 @@ class GeneticAlgorithm :
         self.generatePopulation()
         # Evaluate and sort it for the first time
         self.evaluatePopulation()
+        print(len(self.population))
         self.sortPopulation()
         
         # Main GA algortihm loop
@@ -424,9 +428,37 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     def evaluatePopulation(self) :
         
-        for compressionOperator in self.population :
-            self.dataFrame.evaluateCompressionOperator(compressionOperator)
+        # Define the population accumulator
+        populationAccumulator = Queue()
+        
+        # Danger check
+        if len(self.population) % cpu_count() != 0 :
+            print("The population is not divisible by the CPU count! \n\nExiting...")
+            sys.exit()
 
+        # Slit the population into 8 equal parts
+        splitLength = cpu_count()
+        splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
+            
+        # Initialize the process pool
+        with Pool(processes = cpu_count()) as processPool :
+
+            # Map the population to a process in the pool and execute it
+            for subPopulation in splitPopulation :
+                processPool.starmap(self.evaluateSubPopulation, (subPopulation, populationAccumulator))
+
+        # Set the accumulated evaluated population back to the global population
+        accumulatedPopulation = []
+        while populationAccumulator.empty() != True :
+            accumulatedPopulation.append(populationAccumulator.get())
+        
+        self.population = accumulatedPopulation
+
+    def evaluateSubPopulation(self, subPopulation, accumulator) :
+
+        for compressionOperator in subPopulation :
+            accumulator.put(self.dataFrame.evaluateCompressionOperator(compressionOperator))
+        
     # Function:
     # --------- 
     #   saveElites()
@@ -490,7 +522,6 @@ class GeneticAlgorithm :
         for i in range(len(self.elites)) :
             self.population[i] = self.elites[i]
 
-    
     # Function:
     # --------- 
     #   sortPopulation()
