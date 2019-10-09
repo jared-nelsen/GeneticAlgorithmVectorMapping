@@ -99,7 +99,7 @@ class DataFrame :
             resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
             # Compare the error between the resultant product and the given product
-            stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+            stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
             # Record the error
             stimulusProductPairErrors.append(stimulusProductPairError)

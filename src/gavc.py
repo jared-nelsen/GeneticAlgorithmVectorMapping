@@ -4,14 +4,14 @@ from DataFrame import DataFrame
 
   # Silence Tensorflow
 import tensorflow as tf
-tf.disable_v2_behavior()
+# tf.disable_v2_behavior()
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def runRandomGavcInstance() :
 
-    productVectorSize = 3
-    stimulusProductPairCount = 10
+    productVectorSize = 5
+    stimulusProductPairCount = 1
 
     print("Running GAVC...")
 
