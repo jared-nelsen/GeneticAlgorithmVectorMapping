@@ -89,7 +89,7 @@ class DataFrame :
 
             # Simulate a neural network
             resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(stimulus, backingTensor[0]), backingTensorBiases[0]))
-            for i in range(1, len(backingTensor)) :
+            for i in range(1, len(backingTensor) - 1) :
                 resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
             
             # Scale the values by the highest possible value of the product vector
