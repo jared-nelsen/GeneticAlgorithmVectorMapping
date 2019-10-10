@@ -7,10 +7,10 @@ class CompressionOperator :
 
     # Configuration
     # -------------
-    backingTensorDepth = 3
-    backingTensorValueLow = 0
+    backingTensorDepth = 5
+    backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .00001
+    mutationMagnitude = .000000001
     # Fitness
     fitness = 99999999
 
@@ -27,6 +27,7 @@ class CompressionOperator :
     #   The Z dimension is described by the successive ordering of the set
     #   of rank 1 tensors.
     backingTensor = []
+    backingTensorBiases = []
 
     def __init__(self, productVectorSize) :
         self.productVectorSize = productVectorSize
@@ -34,34 +35,51 @@ class CompressionOperator :
 
     def generateRandomBackingTensor(self) :
 
-        #I DONT KNOW WHY THIS WORKS!!!
+        # Generate the random backing tensor
         self.backingTensor.clear()
-
         for i in range(self.backingTensorDepth) :
             backingTensorLayer = []
             for j in range(self.productVectorSize) :
                 backingTensorLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             self.backingTensor.append(backingTensorLayer)
 
+        # Generate random biases
+        self.backingTensorBiases.clear()
+        for i in range(self.backingTensorDepth) :
+            backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
+            
     def mutate(self, mutationRate, topologicalMutationRate, valueReplacementBias) :
 
         # Randomly add a new layer
         addALayerChance = random.uniform(0, 1)
         if addALayerChance < topologicalMutationRate :
 
+            # Generate the randomized new layer
             newLayer = []
             for i in range(self.productVectorSize) :
                 newLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
 
+            # Insert the new layer
             randomInsertionIndex = random.randint(0, len(self.backingTensor) - 1)
             self.backingTensor.insert(randomInsertionIndex, newLayer)
+
+            # Generate the randomized new bias value
+            newBias = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
             
+            # Insert the new bias at the same index
+            self.backingTensorBiases.insert(randomInsertionIndex, newBias)
+
         # Randomly remove a layer
         removeALayerChance = random.uniform(0, 1)
         if removeALayerChance < topologicalMutationRate and len(self.backingTensor) > 2:
 
             randomDeletionIndex = random.randint(0, len(self.backingTensor) - 1)
+
+            # Delete the backing tensor layer at the deletion index
             del self.backingTensor[randomDeletionIndex]
+
+            # Delete the bias value at the deletion index
+            del sef.backingTensorBiases[randomDeletionIndex]
             
         # Randomly mutate the values in the backing tensor
         for i in range(len(self.backingTensor)) :
@@ -76,6 +94,22 @@ class CompressionOperator :
                         else :
                             rank1Tensor[j] = rank1Tensor[j] - self.mutationMagnitude
 
+        # Randomly mutate the bias values
+        for i in range(len(self.backingTensorBiases)) :
+            if random.uniform(0, 1) < mutationRate :
+                if random.uniform(0, 1) < valueReplacementBias :
+                    self.backingTensorBiases[i] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
+                else :
+                    adjustedBias = self.backingTensorBiases[i]
+                    
+                    if random.uniform(0, 1) < .5 :
+                        adjustedBias = adjustedBias + self.mutationMagnitude
+                    else :
+                        adjustedBias = adjustedBias - self.mutationMagnitude
+
+                    if adjustedBias > self.backingTensorValueLow and adjustedBias < self.backingTensorValueHigh :
+                        self.backingTensorBiases[i] = adjustedBias
+                        
     def setFitness(self, fitness) :
         self.fitness = fitness
 
@@ -91,8 +125,14 @@ class CompressionOperator :
     def getBackingTensor(self) :
         return self.backingTensor
 
+    def getBackingTensorBiases(self) :
+        return self.backingTensorBiases
+
     def setBackingTensor(self, newBackingTensor) :
         self.backingTensor = newBackingTensor
+
+    def setBackingTensorBiases(self, newBiases) :
+        self.backingTensorBiases = newBiases
 
     def clone(self) :
         clone = CompressionOperator(self.productVectorSize)

@@ -242,12 +242,11 @@ class GeneticAlgorithm :
     #   Crossover occurs based on the specified crossover rate. Crossover rates are 
     #   meant to be high and usually always higher than mutation rates. Some 
     #   research-backed values are .8 - .99. Crossover is representative of the
-    #   exploratory element of the algorithm. It seeks to deviate enough from the 
-    #   current best solutions in order to find 'distant' solutions that may be 
-    #   better. It does this by recombinating the encodings of the population of 
-    #   solutions with each other. Solutions with a higher fitness have a 
-    #   commensurately better chance of passing on their information. This logic is
-    #   carried out in the select routine. However, there is still a chance that a 
+    #   exploitative element of the algorithm. It seeks to capitalize on solutations
+    #   that are already know to be good. It does this by recombinating the encodings
+    #   of the population of solutions with each other. Solutions with a higher fitness
+    #   have a commensurately better chance of passing on their information. This logic
+    #   is carried out in the select routine. However, there is still a chance that a 
     #   better solution lies 'closer' to a current poor one. The GA takes this into 
     #   account by recombinating solutions with each other. This methodology allows
     #   these properties: a graceful approch to a better solution, consideration
@@ -262,24 +261,38 @@ class GeneticAlgorithm :
     def crossover(self) :
         
         crossedOverPopulation = []
-        
+
+        # Go through the double-sized population
         for i in range(int(len(self.population) / 2)) :
 
+            # Extract the parents to be crossed over
             parentA = self.population[i]
             i = i + 1
             parentB = self.population[i]
 
             newPopulationMemberBackingTensor = []
-            parentABackingTensor = parentA.getBackingTensor()
-            parentBBackingTensor = parentB.getBackingTensor()
 
-            # Set the primary parent to be the one with the longer shorter tensor
+            # Get the backing tensors
+            parentABackingTensor = parentA.getBackingTensor()
+            parentABackingTensorBiases = parentA.getBackingTensorBiases()
+
+            # Get the backing tensor biases
+            parentBBackingTensor = parentB.getBackingTensor()
+            parentBBackingTensorBiases = parentB.getBackingTensorBiases()
+
+            # Set the primary parent to be the one with the shorter tensor
             if len(parentABackingTensor) > len(parentBBackingTensor) :
+                # Set the backing tensors
                 temp = parentABackingTensor
                 parentABackingTensor = parentBBackingTensor
                 parentBBackingTensor = temp
+
+                # Set the backing tensor biases
+                temp = parentABackingTensorBiases
+                parentABackingTensorBiases = parentBBackingTensorBiases
+                parentBBackingTensorBiases = temp
             
-            # Crossover values between the two parents
+            # Crossover values in the backing tensor between the two parents
             for j in range(len(parentABackingTensor)) :
 
                 newPopulationMemberBackingTensorRank1TensorMember = []
@@ -296,8 +309,19 @@ class GeneticAlgorithm :
 
                 newPopulationMemberBackingTensor.append(newPopulationMemberBackingTensorRank1TensorMember)    
 
+            # Crossover the values in the backing tensor bias tensors
+            newPopulationMemberBackingTensorBiases = []
+            for j in range(len(parentABackingTensorBiases)) :
+
+                # Notice we default to parent A's data
+                if random.uniform(0, 1) < self.crossoverRate :
+                    newPopulationMemberBackingTensorBiases.append(parentBBackingTensorBiases[j])
+                else :
+                    newPopulationMemberBackingTensorBiases.append(parentABackingTensorBiases[j])
+            
             newPopulationMember = CompressionOperator(parentA.getProductVectorSize())
             newPopulationMember.setBackingTensor(newPopulationMemberBackingTensor)
+            newPopulationMember.setBackingTensorBiases(newPopulationMemberBackingTensorBiases)
 
             crossedOverPopulation.append(newPopulationMember)
 
@@ -385,14 +409,10 @@ class GeneticAlgorithm :
     #   More information about Mutation in general:
     #   -------------------------------------------
     #   Mutation occurs based opon the specified mutation rate. It serves to 
-    #   exploit the solution members of the population by exploring the search
-    #   space that is very local to the member being mutated. In this 
-    #   implementation, mutation occurs at the same rate globally to the 
-    #   popluation as it does locally to the member. If the member is selected 
-    #   to be mutated then the mutation the member undergoes is still dictated
-    #   by the same rate. Mutation rates are generally always smaller than crossover
-    #   rates and usually very, very small. Some researched-backed values are .01 
-    #   to .1 .
+    #   explore the search space in hopes that a more distant solution may be
+    #   better. In this implementation mutation happens on an element-wise basis.
+    #   Mutation rates are generally always smaller than crossover rates and are
+    #   usually very, very small. Some researched-backed values are .01 to .1 .
     # --------------------------------------------------------------------------
     def mutate(self) :
         
