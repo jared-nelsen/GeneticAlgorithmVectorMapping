@@ -424,6 +424,9 @@ class GeneticAlgorithm :
     #   the Data Frame's evalutation function. The evaluateCompressionOperator()
     #   function in the Data Frame sets the measured fitness value on the 
     #   Compression Operator that is passed into it.
+    #
+    #   This implementation uses Python's multiprocessing library to evaluate
+    #   the members of the population on all available processors.
     # --------------------------------------------------------------------------
     def evaluatePopulation(self) :
         
@@ -438,7 +441,7 @@ class GeneticAlgorithm :
             print("Exiting...")
             sys.exit()
 
-        # Slit the population into equal parts in accordance with the cpu count
+        # Split the population into equal parts in accordance with the cpu count
         splitLength = cpu_count()
         splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
             
@@ -455,7 +458,32 @@ class GeneticAlgorithm :
             accumulatedPopulation.append(populationAccumulator.get())
         
         self.population = accumulatedPopulation
-        
+
+    # Function:
+    # --------- 
+    #   evaluateSubPopulation()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Evaluates the sub popuation passed to it and places it in the accumulator
+    #   queue.
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   subPopulation - The portion of the population to evaluate in this Process.
+    #   accumulator - A Python multiprocessing.Queue() object that acts as an
+    #                 accumulator for the evaluated compression operators
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   The evaluated members of the sub population have been placed in the
+    #   accumulator queue.
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   This function evaluates the members of a portion of the global population.
+    #   It is set off as a Process in Python's multiprocessing library.
+    # --------------------------------------------------------------------------
     def evaluateSubPopulation(self, subPopulation, accumulator) :
         
         for compressionOperator in subPopulation :
