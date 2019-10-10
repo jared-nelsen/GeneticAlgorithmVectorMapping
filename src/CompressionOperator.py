@@ -46,7 +46,7 @@ class CompressionOperator :
         # Generate random biases
         self.backingTensorBiases.clear()
         for i in range(self.backingTensorDepth) :
-            backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
+            self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
     def mutate(self, mutationRate, topologicalMutationRate, valueReplacementBias) :
 
@@ -79,7 +79,7 @@ class CompressionOperator :
             del self.backingTensor[randomDeletionIndex]
 
             # Delete the bias value at the deletion index
-            del sef.backingTensorBiases[randomDeletionIndex]
+            del self.backingTensorBiases[randomDeletionIndex]
             
         # Randomly mutate the values in the backing tensor
         for i in range(len(self.backingTensor)) :

@@ -78,7 +78,8 @@ class DataFrame :
         # the corresponding product vectors
         stimulusProductPairErrors = []
 
-        backingTensor = compressionOperator.backingTensor
+        backingTensor = compressionOperator.getBackingTensor()
+        backingTensorBiases = compressionOperator.getBackingTensorBiases()
 
         # For each stimulus-product vector pair
         for pairIndex in range(len(self.stimulusVector)) :
@@ -86,11 +87,10 @@ class DataFrame :
             stimulus = self.stimulusVector[pairIndex]
             productVector = self.productVectors[pairIndex]
 
-            # Run the mapping operator with the given stimulus
-            # resultantMappingOperationProduct = sess.run(mappingOperation, feed_dict = {inputPlaceholder: stimulus})
-            resultantMappingOperationProduct = tf.multiply(stimulus, backingTensor[0])
-            for index in range(1, len(backingTensor)) :
-                resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, backingTensor[index])
+            # Simulate a neural network
+            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            for i in range(1, len(backingTensor)) :
+                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
             
             # Scale the values by the highest possible value of the product vector
             resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
