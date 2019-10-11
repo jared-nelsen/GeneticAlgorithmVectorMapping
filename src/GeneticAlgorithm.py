@@ -23,10 +23,10 @@ class GeneticAlgorithm :
     maxGenerations = 10000000
 
     # Hyperparameters
-    crossoverRate = .3
-    mutationRate = .9
+    crossoverRate = .9
+    mutationRate = .2
     topologicalMutationRate = .05
-    valueReplacementBias = .05
+    valueReplacementBias = .2
     
     # Elitism
     elitismWeight = .3
@@ -53,7 +53,7 @@ class GeneticAlgorithm :
             self.select()
             self.crossover()
             self.mutate()
-            self.injectElites()
+            #elf.injectElites()
             self.evaluatePopulation()
             self.sortPopulation()
             self.saveElites()
@@ -65,7 +65,7 @@ class GeneticAlgorithm :
                 self.bestFitness = currentBestFitness
                 print(" --------------------------------- New Best Fitness = ", self.bestFitness)
 
-            # self.replacePopulationWithBestMember(self.population[-1])
+            # lf.replacePopulationWithBestMember(self.population[-1])
             
             generationCount = generationCount + 1
 

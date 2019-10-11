@@ -7,10 +7,10 @@ class CompressionOperator :
 
     # Configuration
     # -------------
-    backingTensorDepth = 5
-    backingTensorValueLow = 0.0
+    backingTensorDepth = 6
+    backingTensorValueLow = 0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .000000001
+    mutationMagnitude = .000001
     # Fitness
     fitness = 99999999
 
@@ -51,35 +51,35 @@ class CompressionOperator :
     def mutate(self, mutationRate, topologicalMutationRate, valueReplacementBias) :
 
         # Randomly add a new layer
-        addALayerChance = random.uniform(0, 1)
-        if addALayerChance < topologicalMutationRate :
+        # addALayerChance = random.uniform(0, 1)
+        # if addALayerChance < topologicalMutationRate :
 
-            # Generate the randomized new layer
-            newLayer = []
-            for i in range(self.productVectorSize) :
-                newLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
+        #     # Generate the randomized new layer
+        #     newLayer = []
+        #     for i in range(self.productVectorSize) :
+        #         newLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
 
-            # Insert the new layer
-            randomInsertionIndex = random.randint(0, len(self.backingTensor) - 1)
-            self.backingTensor.insert(randomInsertionIndex, newLayer)
+        #     # Insert the new layer
+        #     randomInsertionIndex = random.randint(0, len(self.backingTensor) - 1)
+        #     self.backingTensor.insert(randomInsertionIndex, newLayer)
 
-            # Generate the randomized new bias value
-            newBias = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
+        #     # Generate the randomized new bias value
+        #     newBias = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
             
-            # Insert the new bias at the same index
-            self.backingTensorBiases.insert(randomInsertionIndex, newBias)
+        #     # Insert the new bias at the same index
+        #     self.backingTensorBiases.insert(randomInsertionIndex, newBias)
 
-        # Randomly remove a layer
-        removeALayerChance = random.uniform(0, 1)
-        if removeALayerChance < topologicalMutationRate and len(self.backingTensor) > 2:
+        # # Randomly remove a layer
+        # removeALayerChance = random.uniform(0, 1)
+        # if removeALayerChance < topologicalMutationRate and len(self.backingTensor) > 2:
 
-            randomDeletionIndex = random.randint(0, len(self.backingTensor) - 1)
+        #     randomDeletionIndex = random.randint(0, len(self.backingTensor) - 1)
 
-            # Delete the backing tensor layer at the deletion index
-            del self.backingTensor[randomDeletionIndex]
+        #     # Delete the backing tensor layer at the deletion index
+        #     del self.backingTensor[randomDeletionIndex]
 
-            # Delete the bias value at the deletion index
-            del self.backingTensorBiases[randomDeletionIndex]
+        #     # Delete the bias value at the deletion index
+        #     del self.backingTensorBiases[randomDeletionIndex]
             
         # Randomly mutate the values in the backing tensor
         for i in range(len(self.backingTensor)) :

@@ -7,11 +7,12 @@ import tensorflow as tf
 # tf.disable_v2_behavior()
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 def runRandomGavcInstance() :
 
-    productVectorSize = 10
-    stimulusProductPairCount = 10
+    productVectorSize = 3
+    stimulusProductPairCount = 1
 
     print("Running GAVC...")
 
