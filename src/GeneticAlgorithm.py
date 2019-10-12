@@ -27,6 +27,7 @@ class GeneticAlgorithm :
     mutationRate = .2
     topologicalMutationRate = .05
     valueReplacementBias = .2
+    mutationMagnitude = .000001
     
     # Elitism
     elitismWeight = .3
@@ -53,7 +54,7 @@ class GeneticAlgorithm :
             self.select()
             self.crossover()
             self.mutate()
-            #elf.injectElites()
+            self.injectElites()
             self.evaluatePopulation()
             self.sortPopulation()
             self.saveElites()
@@ -64,8 +65,6 @@ class GeneticAlgorithm :
             if currentBestFitness < self.bestFitness :
                 self.bestFitness = currentBestFitness
                 print(" --------------------------------- New Best Fitness = ", self.bestFitness)
-
-            # lf.replacePopulationWithBestMember(self.population[-1])
             
             generationCount = generationCount + 1
 
@@ -418,6 +417,7 @@ class GeneticAlgorithm :
         
         for compressionOperator in self.population :
             compressionOperator.mutate(self.mutationRate,
+                                       self.mutationMagnitude,
                                        self.topologicalMutationRate,
                                        self.valueReplacementBias)
     # Function:

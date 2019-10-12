@@ -8,9 +8,9 @@ class CompressionOperator :
     # Configuration
     # -------------
     backingTensorDepth = 6
-    backingTensorValueLow = 0
+    backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .000001
+    
     # Fitness
     fitness = 99999999
 
@@ -48,7 +48,7 @@ class CompressionOperator :
         for i in range(self.backingTensorDepth) :
             self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
-    def mutate(self, mutationRate, topologicalMutationRate, valueReplacementBias) :
+    def mutate(self, mutationRate, mutationMagnitude, topologicalMutationRate, valueReplacementBias) :
 
         # Randomly add a new layer
         # addALayerChance = random.uniform(0, 1)
