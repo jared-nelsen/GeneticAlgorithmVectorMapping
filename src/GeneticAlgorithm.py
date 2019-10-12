@@ -9,9 +9,9 @@ from CompressionOperator import CompressionOperator
 
 class GeneticAlgorithm :
 
-    # Data Frame
-    dataFrame = None
-
+    # Evaluation Module
+    evaluationModule = None
+    
     # Population
     population = []
     populationSize = cpu_count() * 5
@@ -33,11 +33,21 @@ class GeneticAlgorithm :
     elitismWeight = .3
     elites = []
 
-    def __init__(self, dataFrame) :
+    def __init__(self, evaluationModule) :
 
-        #Set the data frame for this GA instance
-        self.dataFrame = dataFrame
+        # Set the evaluation module
+        self.evaluationModule = evaluationModule
 
+        # Set the parameters of the GA from the evaluation module
+        self.populationSize = cpu_count() * evaluationModule.populationSizeFactor
+        self.maxGenerations = evaluationModule.maxGenerations
+        self.crossoverRate = evaluationModule.crossoverRate
+        self.mutationRate = evaluationModule.mutationRate
+        self.topologicalMutationRate = evaluationModule.topologicalMutationRate
+        self.valueReplacementBias = evaluationModule.valueReplacementBias
+        self.mutationMagnitude = evaluationModule.mutationMagnitude
+        self.elitismWeight = evaluationModule.elitismWeight
+                
     def run(self) :
 
         # Generate the population
@@ -103,7 +113,7 @@ class GeneticAlgorithm :
     def generatePopulation(self) :
         
         for i in range(self.populationSize) :
-            self.population.append(CompressionOperator(self.dataFrame.getProductVectorSize()))
+            self.population.append(CompressionOperator(self.evaluationModule)
 
     # Function:
     # --------- 
@@ -507,7 +517,7 @@ class GeneticAlgorithm :
     def evaluateSubPopulation(self, subPopulation, accumulator) :
         
         for compressionOperator in subPopulation :
-            self.dataFrame.evaluateCompressionOperator(compressionOperator)
+            self.evaluationModule.getDataFrame().evaluateCompressionOperator(compressionOperator)
             accumulator.put(compressionOperator)
             
     # Function:

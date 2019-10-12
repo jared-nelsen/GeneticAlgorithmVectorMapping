@@ -64,9 +64,15 @@ class DataFrame :
     #        [3], -------------> [9,  34. 11, 244]
     #           ]               ]
 
-    def __init__(self, productVectorSize, stimulusProductPairCount) :
-        self.productVectorSize = productVectorSize
-        self.stimulusProductPairCount = stimulusProductPairCount
+    def __init__(self, evaluationModule) :
+
+        # Set the Data Frame paramters from the evaluation module
+        self.stimulusProductPairCount = evaluationModule.stimulusProductPairCount
+        self.productValueLow = evalutationModule.productValueLow
+        self.productValueHigh = evaluationModule.productValueHigh
+        self.productVectorSize = evaluationModule.productVectorSize
+        
+        # Generate a random data frame
         self.generateRandomDataFrame()
 
     def evaluateCompressionOperator(self, compressionOperator) :

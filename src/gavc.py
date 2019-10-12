@@ -1,6 +1,7 @@
 
 from GeneticAlgorithm import GeneticAlgorithm
 from DataFrame import DataFrame
+from EvaluationModule import EvaluationModule
 
   # Silence Tensorflow
 import tensorflow as tf
@@ -11,22 +12,9 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 def runRandomGavcInstance() :
 
-    productVectorSize = 3
-    stimulusProductPairCount = 1
-
-    print("Running GAVC...")
-
-    print("\nInstantiating a random Data Frame...")
+    evaluationModule = EvaluationModule()
     
-    dataFrame = DataFrame(productVectorSize, stimulusProductPairCount)
-
-    print("\nRandom Data Frame generated!")
-
-    print("\nSetting up the Genetic Algorithm...")
-    
-    ga = GeneticAlgorithm(dataFrame)
-    
-    print("\nGenetic Algorithm set up complete!")
+    ga = GeneticAlgorithm(evaluationModule)
 
     print("\nRunning this instance of GAVC...\n")
 

@@ -8,6 +8,7 @@ class EvaluationModule :
     dataFrame = None
 
     # Algorithm Parameters
+    #   ** These parameters are the source of truth for the parameters throughout the algorithm
     # --------------------
     
     # GA Parameters
@@ -17,6 +18,7 @@ class EvaluationModule :
     mutationRate = .2
     topologicalMutationRate = .05
     valueReplacementBias = .2
+    mutationMagnitude = .000001
     elitismWeight = .3
 
     # Data Frame Parameters
@@ -29,13 +31,11 @@ class EvaluationModule :
     backingTensorDepth = 6
     backingTensorValueLow = 0.0
     backingTensorValueHigh = 1.0
-    mutationMagnitude = .000001
 
     # Performance Metrics
     totalGenerations = 0
     bestFitness = 99999999
     averageFitness = 99999999
-    
     averageNumberOfGenerationsBetweenFitnessGains = 99999999
     generationCountsBetweenFitnessGains = []
     averageFitnessGain = 99999999
@@ -49,7 +49,9 @@ class EvaluationModule :
 
     def getDataFrame(self) :
         return dataFrame
-
+        
+    # Performance Metrics Functions
+    # ----------------------------------------------------------------------------------------------------------------
     def getTotalGenerations(self) :
         return totalGenerations
 

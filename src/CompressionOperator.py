@@ -16,7 +16,7 @@ class CompressionOperator :
 
     # Product Vector Dimensions
     #   The Product vector is one dimensional in this implementation
-    productVectorSize = None
+    productVectorSize = 20
 
     # Backing Tensor
     # --------------
@@ -29,8 +29,15 @@ class CompressionOperator :
     backingTensor = []
     backingTensorBiases = []
 
-    def __init__(self, productVectorSize) :
-        self.productVectorSize = productVectorSize
+    def __init__(self, evaluationModule) :
+
+        # Set the Compression Operator parameters from the evaluation module
+        self.backingTensorDepth = evaluationModule.backingTensorDepth
+        self.backingTensorValueLow = evaluationModule.backingTensorValueLow
+        self.backingTensorValueHigh = evaluationModule.backingTensorValueHigh
+        self.productVectorSize = evaluationModule.productVectorSize
+
+        # Generation a random backing tensor
         self.generateRandomBackingTensor()
 
     def generateRandomBackingTensor(self) :
