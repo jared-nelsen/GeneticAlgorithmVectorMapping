@@ -113,7 +113,7 @@ class GeneticAlgorithm :
     def generatePopulation(self) :
         
         for i in range(self.populationSize) :
-            self.population.append(CompressionOperator(self.evaluationModule)
+            self.population.append(CompressionOperator(self.evaluationModule))
 
     # Function:
     # --------- 
@@ -328,7 +328,7 @@ class GeneticAlgorithm :
                 else :
                     newPopulationMemberBackingTensorBiases.append(parentABackingTensorBiases[j])
             
-            newPopulationMember = CompressionOperator(parentA.getProductVectorSize())
+            newPopulationMember = CompressionOperator(self.evaluationModule)
             newPopulationMember.setBackingTensor(newPopulationMemberBackingTensor)
             newPopulationMember.setBackingTensorBiases(newPopulationMemberBackingTensorBiases)
 

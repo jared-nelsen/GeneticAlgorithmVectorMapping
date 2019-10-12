@@ -68,7 +68,7 @@ class DataFrame :
 
         # Set the Data Frame paramters from the evaluation module
         self.stimulusProductPairCount = evaluationModule.stimulusProductPairCount
-        self.productValueLow = evalutationModule.productValueLow
+        self.productValueLow = evaluationModule.productValueLow
         self.productValueHigh = evaluationModule.productValueHigh
         self.productVectorSize = evaluationModule.productVectorSize
         

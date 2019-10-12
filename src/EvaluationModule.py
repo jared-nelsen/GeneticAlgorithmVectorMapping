@@ -42,30 +42,32 @@ class EvaluationModule :
     fitnessGains = []
 
     def __init__(self) :
+        # Generate and set a default data frame
+        # Call this function again to set the right parameters on the data frame
         self.generateAndSetNewDataFrame()
 
     def generateAndSetNewDataFrame(self) :
-        dataFrame = DataFrame(productVectorSize, stimulusProductPairCount)
+        self.dataFrame = DataFrame(self)
 
     def getDataFrame(self) :
-        return dataFrame
+        return self.dataFrame
         
     # Performance Metrics Functions
     # ----------------------------------------------------------------------------------------------------------------
     def getTotalGenerations(self) :
-        return totalGenerations
+        return self.totalGenerations
 
     def setTotalGenerations(self, totalGenerations) :
         self.totalGenerations = totalGenerations
 
     def getBestFitness(self) :
-        return bestFitness
+        return self.bestFitness
 
     def setBestFitness(self, bestFitness) :
         self.bestFitness = bestFitness
 
     def getAverageFitness(self) :
-        return averageFitness
+        return self.averageFitness
 
     def setAverageFitness(self, averageFitness) :
         self.averageFitness = averageFitness
