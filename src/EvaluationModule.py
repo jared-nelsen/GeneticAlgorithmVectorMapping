@@ -7,6 +7,10 @@ class EvaluationModule :
     # ----------
     dataFrame = None
 
+    # Best Compression Operator
+    #   ** This is the best Compression Operator that is the result of training
+    bestCompressionOperator = None
+
     # Algorithm Parameters
     #   ** These parameters are the source of truth for the parameters throughout the algorithm
     # --------------------
@@ -22,8 +26,8 @@ class EvaluationModule :
     elitismWeight = .3
 
     # Data Frame Parameters
-    stimulusProductPairCount = 1
-    productVectorSize = 3
+    stimulusProductPairCount = 3
+    productVectorSize = 1
     productValueLow = 0.0
     productValueHigh = 1.0
 
@@ -51,6 +55,12 @@ class EvaluationModule :
 
     def getDataFrame(self) :
         return self.dataFrame
+
+    def getBestCompressionOperator(self) :
+        return self.bestCompressionOperator
+
+    def setBestCompressionOperator(self, best) :
+        self.bestCompressionOperator = best
         
     # Performance Metrics Functions
     # ----------------------------------------------------------------------------------------------------------------

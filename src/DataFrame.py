@@ -102,7 +102,7 @@ class DataFrame :
             #resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
 
             # Floor the values so as to compare only integers
-           # resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
+            #resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
             # Compare the error between the resultant product and the given product
             stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
@@ -118,9 +118,42 @@ class DataFrame :
         sumOfErrors = sumOfErrors.numpy()
         compressionOperator.setFitness(sumOfErrors)
 
-        # Reset the default Tensorflow graph
-        # tf.reset_default_graph()
+    def evaluateFinalCompressionOperator(self, finalCompressionOperator) :
 
+        tf.enable_eager_execution()
+
+        numberOfIncorrectValues = 0
+
+        backingTensor = finalCompressionOperator.getBackingTensor()
+        backingTensorBiases = finalCompressionOperator.getBackingTensorBiases()
+
+        for pairIndex in range(len(self.stimulusVector)) :
+
+            stimulus = self.stimulusVector[pairIndex]
+            productVector = self.productVectors[pairIndex]
+
+            # Run the neural network
+            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            for i in range(1, len(backingTensor) - 1) :
+                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
+
+            # Scale and floor the product vector values onto the pixel value scale
+            scaledProductVectorValues = tf.math.floor(tf.multiply(productVector, 256))
+
+            # Scale and floor the resultant values
+            resultantProductValues = tf.math.floor(tf.multiply(resultantMappingOperationProduct, 256))
+
+            # Convert the tensors to arrays
+            scaledProductVectorValues = scaledProductVectorValues.numpy()
+            resultantProductValues = resultantProductValues.numpy()
+            
+            # Detect differences between the vector values
+            for valueIndex in range(len(scaledProductVectorValues)) :
+                if scaledProductVectorValues[valueIndex] != resultantProductValues[valueIndex] :
+                    numberOfIncorrectValues = numberOfIncorrectValues + 1
+
+        return numberOfIncorrectValues
+    
     def generateRandomDataFrame(self) :
 
         # Generate the stimuli
@@ -140,8 +173,8 @@ class DataFrame :
         for i in range(self.stimulusProductPairCount) :
             productVector = []
             for j in range(self.productVectorSize) :
-                # Generate a random int but multiply it by 1.0 to make it a float
-                productVector.append(random.randint(self.productValueLow, self.productValueHigh) * 1.0)
+                # Generate a random double but multiply it by 1.0 to make it a float
+                productVector.append(random.uniform(self.productValueLow, self.productValueHigh) * 1.0)
             self.productVectors.append(productVector)
 
     def loadDataFrameFromFile(self, filePath) :

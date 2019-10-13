@@ -20,17 +20,36 @@ def runRandomGavcInstance() :
 
     ga.run()
 
+def runExperimentWithGAVC() :
+
+    evaluationModule = EvaluationModule()
+    evaluationModule.maxGenerations = 10
+
+    ga = GeneticAlgorithm(evaluationModule)
+
+    print("Running the default experiment with GAVC...\n")
+
+    ga.run()
+
+    print("\nTraining Finished...")
+
+    inconsistencies = evaluationModule.dataFrame.evaluateFinalCompressionOperator(evaluationModule.bestCompressionOperator)
+
+    print("Number of values off = ", inconsistencies)
+
 def runGavc() :
     
     print("\nWelcome to GAVC!\n")
 
     print("Select an option:")
-    print("1) Run an instance of GAVC")
-    print("2) Test the gavc implementation")
+    print("1) Run a default instance of GAVC")
+    print("2) Run an experiment with GAVC")
     option = input()
 
     if option == "1" :
         runRandomGavcInstance()
+    elif option == "2" :
+        runExperimentWithGAVC()
 
 if __name__ == '__main__':
     runGavc()

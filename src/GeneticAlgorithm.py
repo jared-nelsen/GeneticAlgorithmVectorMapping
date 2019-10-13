@@ -78,6 +78,9 @@ class GeneticAlgorithm :
             
             generationCount = generationCount + 1
 
+        # Set the best Compression Operator on the Evaluation Module
+        self.evaluationModule.setBestCompressionOperator(self.population[-1])
+        
     # Function:
     # --------- 
     #   generatePopulation()
