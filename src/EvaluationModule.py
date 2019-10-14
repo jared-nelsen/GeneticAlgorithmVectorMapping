@@ -22,7 +22,8 @@ class EvaluationModule :
     mutationRate = .3
     topologicalMutationRate = .05
     valueReplacementBias = .05
-    mutationMagnitude = .01
+    mutationMagnitudeLow = .00000000001
+    mutationMagnitudeHigh = .01
     elitismWeight = .3
 
     # Data Frame Parameters

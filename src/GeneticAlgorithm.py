@@ -28,7 +28,8 @@ class GeneticAlgorithm :
     mutationRate = .2
     topologicalMutationRate = .05
     valueReplacementBias = .2
-    mutationMagnitude = .000001
+    mutationMagnitudeLow = .00000000001
+    mutationMagnitudeHigh = .01
     
     # Elitism
     elitismWeight = .3
@@ -46,7 +47,8 @@ class GeneticAlgorithm :
         self.mutationRate = evaluationModule.mutationRate
         self.topologicalMutationRate = evaluationModule.topologicalMutationRate
         self.valueReplacementBias = evaluationModule.valueReplacementBias
-        self.mutationMagnitude = evaluationModule.mutationMagnitude
+        self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
+        self.mutationMagnitudeHigh = evaluationModule.mutationMagnitudeHigh
         self.elitismWeight = evaluationModule.elitismWeight
                 
     def run(self) :
@@ -433,7 +435,8 @@ class GeneticAlgorithm :
         
         for compressionOperator in self.population :
             compressionOperator.mutate(self.mutationRate,
-                                       self.mutationMagnitude,
+                                       self.mutationMagnitudeLow,
+                                       self.mutationMagnitudeHigh,
                                        self.topologicalMutationRate,
                                        self.valueReplacementBias)
     # Function:

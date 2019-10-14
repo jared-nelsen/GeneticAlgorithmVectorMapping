@@ -61,7 +61,7 @@ class CompressionOperator :
         for i in range(self.backingTensorDepth) :
             self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
-    def mutate(self, mutationRate, mutationMagnitude, topologicalMutationRate, valueReplacementBias) :
+    def mutate(self, mutationRate, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
 
         # Randomly add a new layer
         addALayerChance = random.uniform(0, 1)
@@ -101,6 +101,7 @@ class CompressionOperator :
                     if random.uniform(0, 1) < valueReplacementBias :
                         rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                     else :
+                        mutationMagnitude = random.uniform(mutationMagnitudeLow, mutationMagnitudeHigh)
                         if random.uniform(0, 1) < .5 :
                             rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
                         else :
@@ -117,6 +118,8 @@ class CompressionOperator :
                     self.backingTensorBiases[i] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                 else :
                     adjustedBias = self.backingTensorBiases[i]
+                    
+                    mutationMagnitude = random.uniform(mutationMagnitudeLow, mutationMagnitudeHigh)
                     if random.uniform(0, 1) < .5 :
                         adjustedBias = adjustedBias + mutationMagnitude
                     else :
