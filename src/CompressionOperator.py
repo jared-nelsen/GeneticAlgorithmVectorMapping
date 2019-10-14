@@ -50,12 +50,12 @@ class CompressionOperator :
 
         # Generate the random backing tensor
         self.backingTensor.clear()
-        for i in range(self.backingTensorDepth) :
-            backingTensorLayer = []
-            for j in range(self.productVectorSize) :
-                backingTensorLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
-            self.backingTensor.append(backingTensorLayer)
+        for i in range(self.backingTensorDepth - 1) :
+            self.backingTensor.append(tf.random.uniform([self.productVectorSize, self.productVectorSize]))
 
+        # Tack on the output layer
+        self.backingTensor.append(tf.random.uniform([self.productVectorSize, 1]))
+        
         # Generate random biases
         self.backingTensorBiases.clear()
         for i in range(self.backingTensorDepth) :
@@ -68,10 +68,8 @@ class CompressionOperator :
         if addALayerChance < topologicalMutationRate :
 
             # Generate the randomized new layer
-            newLayer = []
-            for i in range(self.productVectorSize) :
-                newLayer.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
-
+            newLayer = tf.random.uniform([self.productVectorSize, self.productVectorSize])
+            
             # Insert the new layer
             randomInsertionIndex = random.randint(0, len(self.backingTensor) - 1)
             self.backingTensor.insert(randomInsertionIndex, newLayer)
@@ -95,8 +93,9 @@ class CompressionOperator :
             del self.backingTensorBiases[randomDeletionIndex]
             
         # Randomly mutate the values in the backing tensor
+        newBackingTensor = []
         for i in range(len(self.backingTensor)) :
-            rank1Tensor = self.backingTensor[i]
+            rank1Tensor = self.backingTensor[i].numpy()
             for j in range(len(rank1Tensor)) :
                 if random.uniform(0, 1) < mutationRate :
                     if random.uniform(0, 1) < valueReplacementBias :
@@ -106,7 +105,11 @@ class CompressionOperator :
                             rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
                         else :
                             rank1Tensor[j] = rank1Tensor[j] - mutationMagnitude
+            newBackingTensor.append(tf.convert_to_tensor(rank1Tensor))
 
+        # Set the mutated backing tensor to be the new backing tensor
+        self.backingTensor = newBackingTensor
+                            
         # Randomly mutate the bias values
         for i in range(len(self.backingTensorBiases)) :
             if random.uniform(0, 1) < mutationRate :
@@ -162,11 +165,11 @@ class CompressionOperator :
         for i in range(len(self.backingTensor)) :
             rank1Tensor = []
 
-            backingTensorRank1Tensor = self.backingTensor[i]
+            backingTensorRank1Tensor = self.backingTensor[i].numpy()
             for j in range(len(backingTensorRank1Tensor)) :
                 rank1Tensor.append(backingTensorRank1Tensor[j])
 
-            cloneBackingTensor.append(rank1Tensor)
+            cloneBackingTensor.append(tf.convert_to_tensor(rank1Tensor))
 
         clone.setBackingTensor(cloneBackingTensor)
 

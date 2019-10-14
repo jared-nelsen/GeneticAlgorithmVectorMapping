@@ -3,6 +3,7 @@ import sys
 import random as random
 from itertools import product
 from multiprocessing import Pool, Queue, cpu_count, Manager
+import tensorflow as tf
 
 from DataFrame import DataFrame
 from CompressionOperator import CompressionOperator
@@ -308,8 +309,8 @@ class GeneticAlgorithm :
             for j in range(len(parentABackingTensor)) :
 
                 newPopulationMemberBackingTensorRank1TensorMember = []
-                parentABackingTensorRank1TensorMember = parentABackingTensor[j]
-                parentBBackingTensorRank1TensorMember = parentBBackingTensor[j]
+                parentABackingTensorRank1TensorMember = parentABackingTensor[j].numpy()
+                parentBBackingTensorRank1TensorMember = parentBBackingTensor[j].numpy()
 
                 for k in range(len(parentABackingTensorRank1TensorMember)) : 
 
@@ -319,7 +320,9 @@ class GeneticAlgorithm :
                     else :
                         newPopulationMemberBackingTensorRank1TensorMember.append(parentABackingTensorRank1TensorMember[k])
 
-                newPopulationMemberBackingTensor.append(newPopulationMemberBackingTensorRank1TensorMember)    
+                # Convert the new member's backing tensor rank 1 tensor to a Tensorflow Tensor
+                newLayer = tf.convert_to_tensor(newPopulationMemberBackingTensorRank1TensorMember)
+                newPopulationMemberBackingTensor.append(newLayer)    
 
             # Crossover the values in the backing tensor bias tensors
             newPopulationMemberBackingTensorBiases = []
@@ -462,35 +465,38 @@ class GeneticAlgorithm :
     #   the members of the population on all available processors.
     # --------------------------------------------------------------------------
     def evaluatePopulation(self) :
+
+        for i in range(len(self.population)) :
+            self.evaluationModule.getDataFrame().evaluateCompressionOperator(self.population[i])
         
-        # Define the population accumulator
-        multiprocessingManager = Manager()
-        populationAccumulator = multiprocessingManager.Queue()
+        # # Define the population accumulator
+        # multiprocessingManager = Manager()
+        # populationAccumulator = multiprocessingManager.Queue()
        
-        # Danger check
-        if len(self.population) % cpu_count() != 0 :
-            print("The population is not divisible by the CPU count!")
-            print("The CPU count is: ", cpu_count())
-            print("Exiting...")
-            sys.exit()
+        # # Danger check
+        # if len(self.population) % cpu_count() != 0 :
+        #     print("The population is not divisible by the CPU count!")
+        #     print("The CPU count is: ", cpu_count())
+        #     print("Exiting...")
+        #     sys.exit()
 
-        # Split the population into equal parts in accordance with the cpu count
-        splitLength = cpu_count()
-        splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
+        # # Split the population into equal parts in accordance with the cpu count
+        # splitLength = cpu_count()
+        # splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
             
-        # Initialize the process pool
-        with Pool(processes = cpu_count()) as processPool :
+        # # Initialize the process pool
+        # with Pool(processes = cpu_count()) as processPool :
 
-            # Map the population to a process in the pool and execute it
-            for subPopulation in splitPopulation :
-                processPool.apply(self.evaluateSubPopulation, (subPopulation, populationAccumulator))
+        #     # Map the population to a process in the pool and execute it
+        #     for subPopulation in splitPopulation :
+        #         processPool.apply(self.evaluateSubPopulation, (subPopulation, populationAccumulator))
 
-        # Set the accumulated evaluated population back to the global population
-        accumulatedPopulation = []
-        while populationAccumulator.empty() != True :
-            accumulatedPopulation.append(populationAccumulator.get())
+        # # Set the accumulated evaluated population back to the global population
+        # accumulatedPopulation = []
+        # while populationAccumulator.empty() != True :
+        #     accumulatedPopulation.append(populationAccumulator.get())
         
-        self.population = accumulatedPopulation
+        # self.population = accumulatedPopulation
 
     # Function:
     # --------- 

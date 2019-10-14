@@ -76,8 +76,6 @@ class DataFrame :
         self.generateRandomDataFrame()
 
     def evaluateCompressionOperator(self, compressionOperator) :
-
-        tf.enable_eager_execution()
         
         # Designate a list of errors that are the result of a stimulus
         # being applied to the mapping operation and measured against
@@ -86,7 +84,7 @@ class DataFrame :
 
         backingTensor = compressionOperator.getBackingTensor()
         backingTensorBiases = compressionOperator.getBackingTensorBiases()
-
+        
         # For each stimulus-product vector pair
         for pairIndex in range(len(self.stimulusVector)) :
 
@@ -94,9 +92,9 @@ class DataFrame :
             productVector = self.productVectors[pairIndex]
 
             # Simulate a neural network
-            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(stimulus, backingTensor[0]), backingTensorBiases[0]))
-            for i in range(1, len(backingTensor) - 1) :
-                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
+            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            for i in range(1, len(backingTensor)) :
+                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
             
             # Scale the values by the highest possible value of the product vector
             #resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
@@ -133,9 +131,9 @@ class DataFrame :
             productVector = self.productVectors[pairIndex]
 
             # Run the neural network
-            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(stimulus, backingTensor[0]), backingTensorBiases[0]))
-            for i in range(1, len(backingTensor) - 1) :
-                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.multiply(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
+            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            for i in range(1, len(backingTensor)) :
+                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
 
             # Scale and floor the product vector values onto the pixel value scale
             scaledProductVectorValues = tf.math.floor(tf.multiply(productVector, 256))
@@ -160,22 +158,15 @@ class DataFrame :
         stimulusValue = 1
         for i in range(self.stimulusProductPairCount) :
 
-            stimulus = []
-
             # Multiply by 1.0 to make it a float
-            stimulus.append(stimulusValue * 1.0)
-
+            stimulus = stimulusValue * 1.0
             self.stimulusVector.append(stimulus)
 
             stimulusValue = stimulusValue + 1
 
         # Generate the product vectors
         for i in range(self.stimulusProductPairCount) :
-            productVector = []
-            for j in range(self.productVectorSize) :
-                # Generate a random double but multiply it by 1.0 to make it a float
-                productVector.append(random.uniform(self.productValueLow, self.productValueHigh) * 1.0)
-            self.productVectors.append(productVector)
+            self.productVectors.append(tf.random.uniform([self.productVectorSize, 1]))
 
     def loadDataFrameFromFile(self, filePath) :
         return 0

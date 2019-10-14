@@ -6,6 +6,7 @@ from EvaluationModule import EvaluationModule
   # Silence Tensorflow
 import tensorflow as tf
 # tf.disable_v2_behavior()
+tf.enable_eager_execution()
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
