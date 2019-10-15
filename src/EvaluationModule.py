@@ -16,14 +16,14 @@ class EvaluationModule :
     # --------------------
     
     # GA Parameters
-    populationSizeFactor = 10
+    populationSizeFactor = 5
     maxGenerations = 1000000000
     crossoverRate = .9
-    mutationRate = .3
+    mutationRate = .1
     topologicalMutationRate = .05
     valueReplacementBias = .05
     mutationMagnitudeLow = .00000000001
-    mutationMagnitudeHigh = .01
+    mutationMagnitudeHigh = .1
     elitismWeight = .3
 
     # Data Frame Parameters
@@ -33,8 +33,8 @@ class EvaluationModule :
     productValueHigh = 1.0
 
     # Compression Operator Paremeters
-    backingTensorDepth = 5
-    backingTensorValueLow = 0.0
+    backingTensorDepth = 7
+    backingTensorValueLow = 0
     backingTensorValueHigh = 1.0
 
     # Performance Metrics
