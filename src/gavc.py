@@ -24,7 +24,7 @@ def runRandomGavcInstance() :
 def runExperimentWithGAVC() :
 
     evaluationModule = EvaluationModule()
-    evaluationModule.maxGenerations = 10
+    evaluationModule.maxGenerations = 300
 
     ga = GeneticAlgorithm(evaluationModule)
 

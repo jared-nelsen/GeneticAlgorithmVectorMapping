@@ -16,12 +16,12 @@ class EvaluationModule :
     # --------------------
     
     # GA Parameters
-    populationSizeFactor = 5
+    populationSizeFactor = 6
     maxGenerations = 1000000000
-    crossoverRate = .9
-    mutationRate = .1
+    crossoverRate = .7
+    mutationRate = .05
     topologicalMutationRate = .05
-    valueReplacementBias = .05
+    valueReplacementBias = 0
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .1
     elitismWeight = .3

@@ -131,9 +131,9 @@ class DataFrame :
             productVector = self.productVectors[pairIndex]
 
             # Run the neural network
-            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
             for i in range(1, len(backingTensor)) :
-                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
+                resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
 
             # Scale and floor the product vector values onto the pixel value scale
             scaledProductVectorValues = tf.math.floor(tf.multiply(productVector, 256))
