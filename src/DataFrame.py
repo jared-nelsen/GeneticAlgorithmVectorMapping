@@ -3,7 +3,7 @@ import random as random
 
 import tensorflow as tf
 
-import CompressionOperator
+import MappingOperator
 
 class DataFrame :
 
@@ -75,15 +75,15 @@ class DataFrame :
         # Generate a random data frame
         self.generateRandomDataFrame()
 
-    def evaluateCompressionOperator(self, compressionOperator) :
+    def evaluateMappingOperator(self, mappingOperator) :
         
         # Designate a list of errors that are the result of a stimulus
         # being applied to the mapping operation and measured against
         # the corresponding product vectors
         stimulusProductPairErrors = []
 
-        backingTensor = compressionOperator.getBackingTensor()
-        backingTensorBiases = compressionOperator.getBackingTensorBiases()
+        backingTensor = mappingOperator.getBackingTensor()
+        backingTensorBiases = mappingOperator.getBackingTensorBiases()
         
         # For each stimulus-product vector pair
         for pairIndex in range(len(self.stimulusVector)) :
@@ -103,7 +103,7 @@ class DataFrame :
             # resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
 
             # Compare the error between the resultant product and the given product
-            stimulusProductPairError = tf.losses.absolute_difference(resultantMappingOperationProduct, productVector)
+            stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
             # Record the error
             stimulusProductPairErrors.append(stimulusProductPairError)
@@ -112,18 +112,18 @@ class DataFrame :
         sumOfErrors = tf.reduce_sum(stimulusProductPairErrors)
 
         # Set the sum of the errors over this compression operators as the fitness of
-        # the compression operator
+        # the mapping operator
         sumOfErrors = sumOfErrors.numpy()
-        compressionOperator.setFitness(sumOfErrors)
+        mappingOperator.setFitness(sumOfErrors)
 
-    def evaluateFinalCompressionOperator(self, finalCompressionOperator) :
+    def evaluateFinalMappingOperator(self, finalMappingOperator) :
 
         tf.enable_eager_execution()
 
         numberOfIncorrectValues = 0
 
-        backingTensor = finalCompressionOperator.getBackingTensor()
-        backingTensorBiases = finalCompressionOperator.getBackingTensorBiases()
+        backingTensor = finalMappingOperator.getBackingTensor()
+        backingTensorBiases = finalMappingOperator.getBackingTensorBiases()
 
         for pairIndex in range(len(self.stimulusVector)) :
 

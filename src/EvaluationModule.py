@@ -7,16 +7,16 @@ class EvaluationModule :
     # ----------
     dataFrame = None
 
-    # Best Compression Operator
-    #   ** This is the best Compression Operator that is the result of training
-    bestCompressionOperator = None
+    # Best Mapping Operator
+    #   ** This is the best Mapping Operator that is the result of training
+    bestMappingOperator = None
 
     # Algorithm Parameters
     #   ** These parameters are the source of truth for the parameters throughout the algorithm
     # --------------------
     
     # GA Parameters
-    populationSizeFactor = 6
+    populationSizeFactor = 5
     maxGenerations = 1000000000
     crossoverRate = .7
     mutationRate = .05
@@ -24,6 +24,7 @@ class EvaluationModule :
     valueReplacementBias = 0
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .1
+    selectionBias = .08
     elitismWeight = .3
 
     # Data Frame Parameters
@@ -32,7 +33,7 @@ class EvaluationModule :
     productValueLow = 0.0
     productValueHigh = 1.0
 
-    # Compression Operator Paremeters
+    # Mapping Operator Paremeters
     backingTensorDepth = 7
     backingTensorValueLow = 0
     backingTensorValueHigh = 1.0
@@ -57,11 +58,11 @@ class EvaluationModule :
     def getDataFrame(self) :
         return self.dataFrame
 
-    def getBestCompressionOperator(self) :
-        return self.bestCompressionOperator
+    def getBestMappingOperator(self) :
+        return self.bestMappingOperator
 
-    def setBestCompressionOperator(self, best) :
-        self.bestCompressionOperator = best
+    def setBestMappingOperator(self, best) :
+        self.bestMappingOperator = best
         
     # Performance Metrics Functions
     # ----------------------------------------------------------------------------------------------------------------

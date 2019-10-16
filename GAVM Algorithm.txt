@@ -1,0 +1,43 @@
+
+GAVM - Genetic Algorithm Vector Mapping
+------------------------------------------
+Author: Jared Nelsen
+Organization: Chronic Labs, LLC
+Project Start Date: 9-15-19
+------------------------------------------
+
+Simple Algorithm Premise:
+-------------------------
+There exist 2 vectors in a Data Frame. One is named the "Stimulus Vector", and one is named the "Product Vector". The Stimulus vector
+is a one dimensional vector whose N elements are Tensors of rank 1. The Product vector is a vector whose N elements are
+Tensors of rank 2. In vector terms, the Stimulus vector is made up of N vectors whose length are 1 and the Product vector
+is made up of N vectors whose length is variable.
+
+We may then postulate that there exists a Tensor of rank 3 called the Mapping Operator that maps the N elements of both
+the Stimulus and Product vectors together element-wise. The Genetic Algorithm's goal is to generate the Mapping Operator.
+
+Finally, the ultimate goal is for the algorithm to iteratively generate Mapping Operators over precedent Mapping
+Operators using the same schema. Once the algorithm generates a Mapping Operator, that Mapping Operator is loaded
+into the Product Vector and the algorithm runs again. In this way, large sets of vectors can be iteratively folded into
+smaller ones.
+
+Implementation details:
+-----------------------
+I have determined that the values of the matrix should be constrained to a scale of 0 to 1. This seems to make more sense
+than letting the values in the backing tensor vary by huge degrees. My intuition tells me that the algorithm will converge
+more smoothly this way. This means that I will have to implement a scaling function to the outputs but this seems easy
+enough with Tensorflow.
+
+Tools
+-----
+Python will be used for the initial implementation. It was chosen because it has good APIs for Tensorflow. Tensorflow was
+chosen after doing research on the best way to work with matrix and Tensor computation on the GPU.
+
+Environment Setup
+-----------------
+1. Create the folder ~/.virtualenvs
+2. Follow Tensorflow installation here: https://www.tensorflow.org/install/pip
+   - For creating a virtual environment use this command:
+      virtualenv --system-site-packages -p python3 gavcVenv
+3. Use command pallete in vscode to activate gavcVenv by using Python: select interpreter
+4. Run this to fix Numpy Version: pip install "numpy<1.17"

@@ -6,7 +6,7 @@ from multiprocessing import Pool, Queue, cpu_count, Manager
 import tensorflow as tf
 
 from DataFrame import DataFrame
-from CompressionOperator import CompressionOperator
+from MappingOperator import MappingOperator
 
 class GeneticAlgorithm :
 
@@ -30,6 +30,7 @@ class GeneticAlgorithm :
     valueReplacementBias = .2
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .01
+    selectionBias = .08
     
     # Elitism
     elitismWeight = .3
@@ -49,6 +50,7 @@ class GeneticAlgorithm :
         self.valueReplacementBias = evaluationModule.valueReplacementBias
         self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
         self.mutationMagnitudeHigh = evaluationModule.mutationMagnitudeHigh
+        self.selectionBias = evaluationModule.selectionBias
         self.elitismWeight = evaluationModule.elitismWeight
                 
     def run(self) :
@@ -81,8 +83,8 @@ class GeneticAlgorithm :
             
             generationCount = generationCount + 1
 
-        # Set the best Compression Operator on the Evaluation Module
-        self.evaluationModule.setBestCompressionOperator(self.population[-1])
+        # Set the best Mapping Operator on the Evaluation Module
+        self.evaluationModule.setBestMappingOperator(self.population[-1])
         
     # Function:
     # --------- 
@@ -90,7 +92,7 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Description:
     # ------------
-    #   Generates the population of Compression Operators for the Genetic Algorithm.
+    #   Generates the population of Mapping Operators for the Genetic Algorithm.
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
@@ -102,24 +104,24 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
-    #   Delegates the generation of randomly initialized Compression Operators to
-    #   the Compression Operator constructor. Each Compression Operator needs to 
+    #   Delegates the generation of randomly initialized Mapping Operators to
+    #   the Mapping Operator constructor. Each Mapping Operator needs to 
     #   know what size the vectors in the Product vector are in order to size 
     #   itself correctly. The Data Frame that is global to this class is the single
-    #   source of truth for that value so we pass its value into the Compression 
+    #   source of truth for that value so we pass its value into the Mapping 
     #   Operators as we construct them. 
     # 
-    #   Each Compression Operator also needs to know how deep its backing tensor 
+    #   Each Mapping Operator also needs to know how deep its backing tensor 
     #   should be. In the initial implementation this value is static and common
-    #   to all Compression Operators. In a future implementation this value may
-    #   become owned by each Compression Operator and altered through mutation
+    #   to all Mapping Operators. In a future implementation this value may
+    #   become owned by each Mapping Operator and altered through mutation
     #   and crossover. At this point the single source of truth for this common
     #   value is also stored in the Data Frame.
     # --------------------------------------------------------------------------
     def generatePopulation(self) :
         
         for i in range(self.populationSize) :
-            self.population.append(CompressionOperator(self.evaluationModule))
+            self.population.append(MappingOperator(self.evaluationModule))
 
     # Function:
     # --------- 
@@ -182,8 +184,8 @@ class GeneticAlgorithm :
 
         # Load the fitness values from the population
         fitnessValues = []
-        for compressionOperator in self.population :
-            fitnessValues.append(compressionOperator.getFitness())
+        for mappingOperator in self.population :
+            fitnessValues.append(mappingOperator.getFitness())
 
         # Sum the fitnesses of the population
         populationFitnessSum = 0
@@ -200,15 +202,12 @@ class GeneticAlgorithm :
 
         # Perform roulette wheel selection
         for i in reversed(range(len(self.population) * 2)) :
-            randomFitness = random.uniform(0.0, 0.08)
+            randomFitness = random.uniform(0.0, self.selectionBias)
 
             k = len(fitnessValues) - 1
             while randomFitness > fitnessValues[k] :
                 k = k - 1
             selectedPopulation.append(self.population[k])
-
-        #for c in selectedPopulation :
-         #   print(c.getFitness(), end = "")
 
         self.population = selectedPopulation
 
@@ -218,7 +217,7 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Description:
     # ------------
-    #   Crosses over the Compression Operators in the fitness-selected population
+    #   Crosses over the Mapping Operators in the fitness-selected population
     # --------------------------------------------------------------------------
     # Parameters:
     # -----------
@@ -241,7 +240,7 @@ class GeneticAlgorithm :
     #   Crossover methodology:
     #   ----------------------
     #   This first iteration of the crossover algorithm only crosses over the
-    #   values in the Compression Operator Tensor by simply picking one of
+    #   values in the Mapping Operator Tensor by simply picking one of
     #   the two values in each parent to pass on to the single child. This
     #   random picking happens at a rate represented by the crossover rate
     #   that is global to the Genetic Algorithm.
@@ -336,7 +335,7 @@ class GeneticAlgorithm :
                 else :
                     newPopulationMemberBackingTensorBiases.append(parentABackingTensorBiases[j])
             
-            newPopulationMember = CompressionOperator(self.evaluationModule)
+            newPopulationMember = MappingOperator(self.evaluationModule)
             newPopulationMember.setBackingTensor(newPopulationMemberBackingTensor)
             newPopulationMember.setBackingTensorBiases(newPopulationMemberBackingTensorBiases)
 
@@ -362,20 +361,20 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
-    #   Mutates the numerical and shape features of the Compression Operators in
+    #   Mutates the numerical and shape features of the Mapping Operators in
     #   the population.
     #
     #   The current implementation of the mutation algortithm can:
     #   ----------------------------------------------------------
-    #   1. Mutate the values in the Compression Operator Tensor
+    #   1. Mutate the values in the Mapping Operator Tensor
     #
     #   An ideal future implementation of the mutation algorithm can:
     #   -------------------------------------------------------------
     #   1. Add a layer in the Z dimension of the rank 3 Tensor that is the
-    #      Compression Operator.
+    #      Mapping Operator.
     #   2. Remove a layer in the Z dimension of the rank 3 Tensor that is the
-    #      Compression Operator.
-    #   3. Mutate the values in the Compression Operator Tensor
+    #      Mapping Operator.
+    #   3. Mutate the values in the Mapping Operator Tensor
     #
     #       ** This ideal mutation strategy will affect how crossover is
     #          performed.
@@ -388,7 +387,7 @@ class GeneticAlgorithm :
     #       3. mutationMagnitude
     #       4. ratioBetweenValueReplacementAndValueAdjustment
     #
-    #       ** This strategy would require a refactor to allow each Compression
+    #       ** This strategy would require a refactor to allow each Mapping
     #          Operator value to hold its own mutation hyperparameters
     #
     #   Numerical Mutation methodology:
@@ -419,9 +418,9 @@ class GeneticAlgorithm :
     #       continuous optimization curve instead of discretely disjoint values
     #       where things like primes might cause problems in convergence. One
     #       strategy to get the best of both worlds is to apply a flooring
-    #       function to the output of the Compression Operator Tensor before it
+    #       function to the output of the Mapping Operator Tensor before it
     #       is evaluated. Then integers are evaluated against integers while
-    #       allowing the Compression Operator Tensor to be continuously valued.
+    #       allowing the Mapping Operator Tensor to be continuously valued.
     # 
     #   More information about Mutation in general:
     #   -------------------------------------------
@@ -433,19 +432,19 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     def mutate(self) :
         
-        for compressionOperator in self.population :
-            compressionOperator.mutate(self.mutationRate,
-                                       self.mutationMagnitudeLow,
-                                       self.mutationMagnitudeHigh,
-                                       self.topologicalMutationRate,
-                                       self.valueReplacementBias)
+        for mappingOperator in self.population :
+            mappingOperator.mutate(self.mutationRate,
+                                   self.mutationMagnitudeLow,
+                                   self.mutationMagnitudeHigh,
+                                   self.topologicalMutationRate,
+                                   self.valueReplacementBias)
     # Function:
     # --------- 
     #   evaluatePopulation()
     # --------------------------------------------------------------------------
     # Description:
     # ------------
-    #   Uses the Data Frame to run and measure the fitness of each Compression
+    #   Uses the Data Frame to run and measure the fitness of each Mapping
     #   Operator in the population.
     # --------------------------------------------------------------------------
     # Parameters:
@@ -458,48 +457,45 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     # Explanation:
     # ------------
-    #   We relegate the logic for running and evaluating a given Compression
-    #   Operator to the Data Frame so just pass each Compression Operator into
-    #   the Data Frame's evalutation function. The evaluateCompressionOperator()
+    #   We relegate the logic for running and evaluating a given Mapping
+    #   Operator to the Data Frame so just pass each Mapping Operator into
+    #   the Data Frame's evalutation function. The evaluateMappingOperator()
     #   function in the Data Frame sets the measured fitness value on the 
-    #   Compression Operator that is passed into it.
+    #   Mapping Operator that is passed into it.
     #
     #   This implementation uses Python's multiprocessing library to evaluate
     #   the members of the population on all available processors.
     # --------------------------------------------------------------------------
     def evaluatePopulation(self) :
 
-        for i in range(len(self.population)) :
-            self.evaluationModule.getDataFrame().evaluateCompressionOperator(self.population[i])
-        
-        # # Define the population accumulator
-        # multiprocessingManager = Manager()
-        # populationAccumulator = multiprocessingManager.Queue()
+        # Define the population accumulator
+        multiprocessingManager = Manager()
+        populationAccumulator = multiprocessingManager.Queue()
        
-        # # Danger check
-        # if len(self.population) % cpu_count() != 0 :
-        #     print("The population is not divisible by the CPU count!")
-        #     print("The CPU count is: ", cpu_count())
-        #     print("Exiting...")
-        #     sys.exit()
+        # Danger check
+        if len(self.population) % cpu_count() != 0 :
+            print("The population is not divisible by the CPU count!")
+            print("The CPU count is: ", cpu_count())
+            print("Exiting...")
+            sys.exit()
 
-        # # Split the population into equal parts in accordance with the cpu count
-        # splitLength = cpu_count()
-        # splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
+        # Split the population into equal parts in accordance with the cpu count
+        splitLength = cpu_count()
+        splitPopulation = [self.population[i * splitLength:(i + 1) * splitLength] for i in range((len(self.population) + splitLength - 1) // splitLength)]
             
-        # # Initialize the process pool
-        # with Pool(processes = cpu_count()) as processPool :
+        # Initialize the process pool
+        with Pool(processes = cpu_count()) as processPool :
 
-        #     # Map the population to a process in the pool and execute it
-        #     for subPopulation in splitPopulation :
-        #         processPool.apply(self.evaluateSubPopulation, (subPopulation, populationAccumulator))
+            # Map the population to a process in the pool and execute it
+            for subPopulation in splitPopulation :
+                processPool.apply(self.evaluateSubPopulation, (subPopulation, populationAccumulator))
 
-        # # Set the accumulated evaluated population back to the global population
-        # accumulatedPopulation = []
-        # while populationAccumulator.empty() != True :
-        #     accumulatedPopulation.append(populationAccumulator.get())
+        # Set the accumulated evaluated population back to the global population
+        accumulatedPopulation = []
+        while populationAccumulator.empty() != True :
+            accumulatedPopulation.append(populationAccumulator.get())
         
-        # self.population = accumulatedPopulation
+        self.population = accumulatedPopulation
 
     # Function:
     # --------- 
@@ -514,7 +510,7 @@ class GeneticAlgorithm :
     # -----------
     #   subPopulation - The portion of the population to evaluate in this Process.
     #   accumulator - A Python multiprocessing.Queue() object that acts as an
-    #                 accumulator for the evaluated compression operators
+    #                 accumulator for the evaluated Mapping Operators
     # --------------------------------------------------------------------------
     # Result:
     # --------
@@ -528,9 +524,9 @@ class GeneticAlgorithm :
     # --------------------------------------------------------------------------
     def evaluateSubPopulation(self, subPopulation, accumulator) :
         
-        for compressionOperator in subPopulation :
-            self.evaluationModule.getDataFrame().evaluateCompressionOperator(compressionOperator)
-            accumulator.put(compressionOperator)
+        for mappingOperator in subPopulation :
+            self.evaluationModule.getDataFrame().evaluateMappingOperator(mappingOperator)
+            accumulator.put(mappingOperator)
             
     # Function:
     # --------- 
@@ -601,7 +597,7 @@ class GeneticAlgorithm :
     # ---------------------------------------------------------------------------
     # Description:
     # ------------
-    #   Sorts the Compression Operators in the population by their fitness level
+    #   Sorts the Mapping Operators in the population by their fitness level
     #   in DESCENDING order.
     # ---------------------------------------------------------------------------
     # Parameters:
@@ -669,7 +665,7 @@ class GeneticAlgorithm :
     # Explanation:
     # ------------
     #   Performs the sorting portion of Merge Sort. Merge Sort is used as the
-    #   sorting algorithm to order the Compression Operators in the population
+    #   sorting algorithm to order the Mapping Operators in the population
     #   by fitness value.
     #
     #   Merging is done in DESCENDING ORDER
@@ -708,7 +704,7 @@ class GeneticAlgorithm :
     # Explanation:
     # ------------
     #   Performs the merging portion of Merge Sort. Merge Sort is used as the
-    #   sorting algorithm to order the Compression Operators in the population
+    #   sorting algorithm to order the Mapping Operators in the population
     #   by fitness value. This is one of two functions used in the algorithm.
     #
     #   Merges in DESCENDING ORDER!

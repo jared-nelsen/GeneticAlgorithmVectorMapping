@@ -3,7 +3,7 @@ import random as random
 
 import tensorflow as tf
 
-class CompressionOperator :
+class MappingOperator :
 
     # Evaluation Module
     evaluationModule = None
@@ -37,7 +37,7 @@ class CompressionOperator :
         # Evaluation Module
         self.evaluationModule = evaluationModule
 
-        # Set the Compression Operator parameters from the evaluation module
+        # Set the Mapping Operator parameters from the evaluation module
         self.backingTensorDepth = evaluationModule.backingTensorDepth
         self.backingTensorValueLow = evaluationModule.backingTensorValueLow
         self.backingTensorValueHigh = evaluationModule.backingTensorValueHigh
@@ -153,7 +153,7 @@ class CompressionOperator :
         self.backingTensorBiases = newBiases
 
     def clone(self) :
-        clone = CompressionOperator(self.evaluationModule)
+        clone = MappingOperator(self.evaluationModule)
 
         clone.backingTensorDepth = self.backingTensorDepth
         clone.backingTensorValueLow = self.backingTensorValueLow
