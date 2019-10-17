@@ -19,25 +19,26 @@ class EvaluationModule :
     populationSizeFactor = 5
     maxGenerations = 1000000000
     crossoverRate = .9
-    mutationRate = .1
+    mutationRate = .05
     topologicalMutationRate = .05
-    valueReplacementBias = 0
-    mutationMagnitudeLow = .00000000001
+    valueReplacementBias = .05
+    mutationMagnitudeLow = .0000000000000001
     mutationMagnitudeHigh = .1
     elitismWeight = .3
 
     # GA Algorithm Parameters
     selectionMethodIndicator = 1
     rouletteWheelselectionBias = .08
+    tournamentPopulationProportion = 1
     
     # Data Frame Parameters
     stimulusProductPairCount = 3
     productVectorSize = 1
     productValueLow = 0.0
-    productValueHigh = 1.0
+    productValueHigh = 1
 
     # Mapping Operator Paremeters
-    backingTensorDepth = 7
+    backingTensorDepth = 5
     backingTensorValueLow = 0
     backingTensorValueHigh = 1.0
 

@@ -1,5 +1,6 @@
 
 import sys
+import math as math
 import random as random
 from itertools import product
 from multiprocessing import Pool, Queue, cpu_count, Manager
@@ -25,7 +26,9 @@ class GeneticAlgorithm :
 
     # Algorithm
     selectionMethodIndicator = 0 # 0 = Roulette Wheel, 1 = Tournament
-
+    rouletteWheelSelectionBias = .08
+    tournamentPopulationProportion = .04    
+    
     # Hyperparameters
     crossoverRate = .9
     mutationRate = .2
@@ -33,7 +36,6 @@ class GeneticAlgorithm :
     valueReplacementBias = .2
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .01
-    rouletteWheelSelectionBias = .08
     
     # Elitism
     elitismWeight = .3
@@ -55,6 +57,7 @@ class GeneticAlgorithm :
         self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
         self.mutationMagnitudeHigh = evaluationModule.mutationMagnitudeHigh
         self.rouletteWheelSelectionBias = evaluationModule.rouletteWheelselectionBias
+        self.tournamentPopulationProportion = evaluationModule.tournamentPopulationProportion
         self.elitismWeight = evaluationModule.elitismWeight
                 
     def run(self) :
@@ -260,17 +263,19 @@ class GeneticAlgorithm :
         selectedPopulation = []
 
         for i in range(len(self.population) * 2) :
-            competitorA = self.population[random.randint(0, len(self.population) - 1)]
-            competitorB = self.population[random.randint(0, len(self.population) - 1)]
 
-            higherFitnessCompetitor = None
-            if competitorA.fitness < competitorB.fitness :
-                higherFitnessCompetitor = competitorA
-            else :
-                higherFitnessCompetitor = competitorB
+            selectedCompetitors = []
+            for j in range(math.floor(len(self.population) * self.tournamentPopulationProportion)) :
+                selectedCompetitors.append(self.population[random.randint(0, len(self.population) - 1)])
 
-            selectedPopulation.append(higherFitnessCompetitor)
+            championIndex = 0
+            for j in range(len(selectedCompetitors)) :
+                if selectedCompetitors[j].fitness < selectedCompetitors[championIndex].fitness :
+                    championIndex = j
 
+            selectedPopulation.append(selectedCompetitors[championIndex])
+                
+            
         self.population = selectedPopulation
     
     # Function:

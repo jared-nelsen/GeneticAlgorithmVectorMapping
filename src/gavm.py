@@ -17,7 +17,7 @@ def runRandomGavcInstance() :
     
     ga = GeneticAlgorithm(evaluationModule)
 
-    print("\nRunning this instance of GAVC...\n")
+    print("\nRunning this instance of GAVM...\n")
 
     ga.run()
 
@@ -28,7 +28,7 @@ def runExperimentWithGAVC() :
 
     ga = GeneticAlgorithm(evaluationModule)
 
-    print("Running the default experiment with GAVC...\n")
+    print("Running the default experiment with GAVM...\n")
 
     ga.run()
 
@@ -40,11 +40,11 @@ def runExperimentWithGAVC() :
 
 def runGavc() :
     
-    print("\nWelcome to GAVC!\n")
+    print("\nWelcome to GAVM!\n")
 
     print("Select an option:")
-    print("1) Run a default instance of GAVC")
-    print("2) Run an experiment with GAVC")
+    print("1) Run a default instance of GAVM")
+    print("2) Run an experiment with GAVM")
     option = input()
 
     if option == "1" :

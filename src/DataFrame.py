@@ -97,14 +97,21 @@ class DataFrame :
                 resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
             
             # Scale the values by the highest possible value of the product vector
-            # resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
+            resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
 
             # Floor the values so as to compare only integers
-            # resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
-
+            #productVector = tf.math.floor(productVector)
+            #resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
+            
             # Compare the error between the resultant product and the given product
             stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
 
+            # productVector = productVector.numpy()
+            # resultantMappingOperationProduct = resultantMappingOperationProduct.numpy()
+            # stimulusProductPairError = 0
+            # for i in range(len(productVector)) :
+            #     stimulusProductPairError = stimulusProductPairError + abs(productVector[i] - resultantMappingOperationProduct[i])
+            
             # Record the error
             stimulusProductPairErrors.append(stimulusProductPairError)
 
@@ -136,10 +143,10 @@ class DataFrame :
                 resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
 
             # Scale and floor the product vector values onto the pixel value scale
-            scaledProductVectorValues = tf.math.floor(tf.multiply(productVector, 256))
-
+            scaledProductVectorValues = tf.math.floor(tf.multiply(productVector, self.productValueHigh))
+            
             # Scale and floor the resultant values
-            resultantProductValues = tf.math.floor(tf.multiply(resultantMappingOperationProduct, 256))
+            resultantProductValues = tf.math.floor(tf.multiply(resultantMappingOperationProduct, self.productValueHigh))
 
             # Convert the tensors to arrays
             scaledProductVectorValues = scaledProductVectorValues.numpy()
@@ -166,7 +173,7 @@ class DataFrame :
 
         # Generate the product vectors
         for i in range(self.stimulusProductPairCount) :
-            self.productVectors.append(tf.random.uniform([self.productVectorSize, 1]))
+            self.productVectors.append(tf.random.uniform([self.productVectorSize, 1], minval = 0, maxval = self.productValueHigh))
 
     def loadDataFrameFromFile(self, filePath) :
         return 0
