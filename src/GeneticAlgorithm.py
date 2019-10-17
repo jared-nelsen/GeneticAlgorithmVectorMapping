@@ -23,6 +23,9 @@ class GeneticAlgorithm :
     # Generations
     maxGenerations = 10000000
 
+    # Algorithm
+    selectionMethodIndicator = 0 # 0 = Roulette Wheel, 1 = Tournament
+
     # Hyperparameters
     crossoverRate = .9
     mutationRate = .2
@@ -30,7 +33,7 @@ class GeneticAlgorithm :
     valueReplacementBias = .2
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .01
-    selectionBias = .08
+    rouletteWheelSelectionBias = .08
     
     # Elitism
     elitismWeight = .3
@@ -44,13 +47,14 @@ class GeneticAlgorithm :
         # Set the parameters of the GA from the evaluation module
         self.populationSize = cpu_count() * evaluationModule.populationSizeFactor
         self.maxGenerations = evaluationModule.maxGenerations
+        self.selectionMethodIndicator = evaluationModule.selectionMethodIndicator
         self.crossoverRate = evaluationModule.crossoverRate
         self.mutationRate = evaluationModule.mutationRate
         self.topologicalMutationRate = evaluationModule.topologicalMutationRate
         self.valueReplacementBias = evaluationModule.valueReplacementBias
         self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
         self.mutationMagnitudeHigh = evaluationModule.mutationMagnitudeHigh
-        self.selectionBias = evaluationModule.selectionBias
+        self.rouletteWheelSelectionBias = evaluationModule.rouletteWheelselectionBias
         self.elitismWeight = evaluationModule.elitismWeight
                 
     def run(self) :
@@ -66,7 +70,10 @@ class GeneticAlgorithm :
         while generationCount < self.maxGenerations and self.population[-1].getFitness() > 0:
 
             # Run GA functions
-            self.select()
+            if self.selectionMethodIndicator == 0 :
+                self.selectRouletteWheel()
+            else :
+                self.selectTournament()
             self.crossover()
             self.mutate()
             self.injectElites()
@@ -125,7 +132,7 @@ class GeneticAlgorithm :
 
     # Function:
     # --------- 
-    #   select()
+    #   selectRouletteWheel()
     # --------------------------------------------------------------------------
     # Description:
     # ------------
@@ -178,7 +185,7 @@ class GeneticAlgorithm :
     #   A good explanation of various selection strategies:
     #       https://www.tutorialspoint.com/genetic_algorithms/genetic_algorithms_parent_selection.htm
     # --------------------------------------------------------------------------
-    def select(self) :
+    def selectRouletteWheel(self) :
 
         selectedPopulation = []
 
@@ -202,7 +209,7 @@ class GeneticAlgorithm :
 
         # Perform roulette wheel selection
         for i in reversed(range(len(self.population) * 2)) :
-            randomFitness = random.uniform(0.0, self.selectionBias)
+            randomFitness = random.uniform(0.0, self.rouletteWheelSelectionBias)
 
             k = len(fitnessValues) - 1
             while randomFitness > fitnessValues[k] :
@@ -211,6 +218,61 @@ class GeneticAlgorithm :
 
         self.population = selectedPopulation
 
+    # Function:
+    # --------- 
+    #   selectTournament()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   Selects members of the population to cross over.
+    # --------------------------------------------------------------------------
+    # Parameters:
+    # -----------
+    #   None
+    # --------------------------------------------------------------------------
+    # Result:
+    # --------
+    #   A new population of selected members has been generated. The new population 
+    #   is double the size of the original population. This new population will be
+    #   made up of consecutive parents that are to be crossed over.
+    #
+    #   Ordering Schema:
+    #   ----------------
+    #   [Parent A1][Parent B1] , [Parent A2][Parent B2] , ... , [Parent AN][Parent BN]
+    #
+    #   Each pair of parents A and B for a given selection will be crossed over
+    #   to form a new population that is of the original length indicated by the
+    #   global variable populationSize. All of this is accomplished in the crossover
+    #   function.
+    #
+    # --------------------------------------------------------------------------
+    # Explanation:
+    # ------------
+    #   This implementation of the selection algorithm uses Tournament Selection.
+    #   In Tournament selection, members are selected by being pit against one
+    #   another in a competition for a higher fitness. This is simple in practice:
+    #   select N members at random and take the member with the highest fitness.
+    #   The research says that picking two members will suffice instead of many.
+    #   This increases variance in the fitness level.
+    # --------------------------------------------------------------------------
+    def selectTournament(self) :
+        
+        selectedPopulation = []
+
+        for i in range(len(self.population) * 2) :
+            competitorA = self.population[random.randint(0, len(self.population) - 1)]
+            competitorB = self.population[random.randint(0, len(self.population) - 1)]
+
+            higherFitnessCompetitor = None
+            if competitorA.fitness < competitorB.fitness :
+                higherFitnessCompetitor = competitorA
+            else :
+                higherFitnessCompetitor = competitorB
+
+            selectedPopulation.append(higherFitnessCompetitor)
+
+        self.population = selectedPopulation
+    
     # Function:
     # --------- 
     #   crossover()

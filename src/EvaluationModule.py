@@ -18,15 +18,18 @@ class EvaluationModule :
     # GA Parameters
     populationSizeFactor = 5
     maxGenerations = 1000000000
-    crossoverRate = .7
-    mutationRate = .05
+    crossoverRate = .9
+    mutationRate = .1
     topologicalMutationRate = .05
     valueReplacementBias = 0
     mutationMagnitudeLow = .00000000001
     mutationMagnitudeHigh = .1
-    selectionBias = .08
     elitismWeight = .3
 
+    # GA Algorithm Parameters
+    selectionMethodIndicator = 1
+    rouletteWheelselectionBias = .08
+    
     # Data Frame Parameters
     stimulusProductPairCount = 3
     productVectorSize = 1
