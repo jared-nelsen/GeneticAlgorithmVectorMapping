@@ -29,13 +29,13 @@ class EvaluationModule :
     # GA Algorithm Parameters
     selectionMethodIndicator = 1
     rouletteWheelselectionBias = .08
-    tournamentPopulationProportion = 1
+    tournamentPopulationProportion = .1
     
     # Data Frame Parameters
     stimulusProductPairCount = 3
     productVectorSize = 1
     productValueLow = 0.0
-    productValueHigh = 1
+    productValueHigh = 256
 
     # Mapping Operator Paremeters
     backingTensorDepth = 5

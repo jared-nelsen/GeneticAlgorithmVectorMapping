@@ -100,8 +100,8 @@ class DataFrame :
             resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
 
             # Floor the values so as to compare only integers
-            #productVector = tf.math.floor(productVector)
-            #resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
+            productVector = tf.math.floor(productVector)
+            resultantMappingOperationProduct = tf.math.floor(resultantMappingOperationProduct)
             
             # Compare the error between the resultant product and the given product
             stimulusProductPairError = tf.compat.v1.losses.absolute_difference(resultantMappingOperationProduct, productVector)
