@@ -24,12 +24,12 @@ class EvaluationModule :
     valueReplacementBias = .05
     mutationMagnitudeLow = .0000000000000001
     mutationMagnitudeHigh = .1
-    elitismWeight = .3
+    elitismWeight = 0
 
     # GA Algorithm Parameters
     selectionMethodIndicator = 1
     rouletteWheelselectionBias = .08
-    tournamentPopulationProportion = .1
+    tournamentPopulationProportion = .4
     
     # Data Frame Parameters
     stimulusProductPairCount = 3
@@ -38,7 +38,7 @@ class EvaluationModule :
     productValueHigh = 256
 
     # Mapping Operator Paremeters
-    backingTensorDepth = 5
+    backingTensorDepth = 10
     backingTensorValueLow = 0
     backingTensorValueHigh = 1.0
 
