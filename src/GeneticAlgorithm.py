@@ -351,6 +351,15 @@ class GeneticAlgorithm :
             i = i + 1
             parentB = self.population[i]
 
+            # Determine whether to crossover or not
+            if random.uniform(0, 1) > self.crossoverRate :
+                # If we dont then take the stronger parent
+                if parentA.getFitness() <= parentB.getFitness() :
+                    crossedOverPopulation.append(parentA)
+                else :
+                    crossedOverPopulation.append(parentB)
+                continue
+
             newPopulationMemberBackingTensor = []
 
             # Get the backing tensors
@@ -383,7 +392,7 @@ class GeneticAlgorithm :
                 for k in range(len(parentABackingTensorRank1TensorMember)) : 
 
                     # Notice we default to parent A's data
-                    if random.uniform(0, 1) < self.crossoverRate :
+                    if random.uniform(0, 1) < .5 :
                         newPopulationMemberBackingTensorRank1TensorMember.append(parentBBackingTensorRank1TensorMember[k])
                     else :
                         newPopulationMemberBackingTensorRank1TensorMember.append(parentABackingTensorRank1TensorMember[k])
@@ -397,7 +406,7 @@ class GeneticAlgorithm :
             for j in range(len(parentABackingTensorBiases)) :
 
                 # Notice we default to parent A's data
-                if random.uniform(0, 1) < self.crossoverRate :
+                if random.uniform(0, 1) < .5 :
                     newPopulationMemberBackingTensorBiases.append(parentBBackingTensorBiases[j])
                 else :
                     newPopulationMemberBackingTensorBiases.append(parentABackingTensorBiases[j])
