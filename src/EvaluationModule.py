@@ -39,7 +39,7 @@ class EvaluationModule :
 
     # Mapping Operator Paremeters
     backingTensorDepth = 8
-    backingTensorValueLow = 0.0
+    backingTensorValueLow = -1.0
     backingTensorValueHigh = 1.0
 
     # Performance Metrics

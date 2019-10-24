@@ -92,9 +92,9 @@ class DataFrame :
             productVector = self.productVectors[pairIndex]
 
             # Simulate a neural network
-            resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
+            resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.scalar_mul(stimulus, backingTensor[0]), backingTensorBiases[0]))
             for i in range(1, len(backingTensor)) :
-                resultantMappingOperationProduct = tf.nn.relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
+                resultantMappingOperationProduct = tf.nn.leaky_relu(tf.add(tf.matmul(resultantMappingOperationProduct, backingTensor[i]), backingTensorBiases[i]))
             
             # Scale the values by the highest possible value of the product vector
             #resultantMappingOperationProduct = tf.multiply(resultantMappingOperationProduct, self.productValueHigh)
