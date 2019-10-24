@@ -174,7 +174,6 @@ class DataFrame :
         # Generate the product vectors
         for i in range(self.stimulusProductPairCount) :
             self.productVectors.append(tf.random.uniform([self.productVectorSize, 1], minval = 0, maxval = self.productValueHigh))
-
     def loadDataFrameFromFile(self, filePath) :
         return 0
         #Implement Me
