@@ -23,8 +23,8 @@ class EvaluationModule :
     mutationLikelihood = .01
     topologicalMutationRate = 0
     valueReplacementBias = 0
-    mutationMagnitudeLow = .01
-    mutationMagnitudeHigh = .1
+    mutationMagnitudeLow = .0000001
+    mutationMagnitudeHigh = .0001
     elitismWeight = 0
 
     # GA Algorithm Parameters
