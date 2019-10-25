@@ -16,29 +16,30 @@ class EvaluationModule :
     # --------------------
     
     # GA Parameters
-    populationSizeFactor = 10
+    populationSizeFactor = 5
     maxGenerations = 1000000000
-    crossoverRate = .9
-    mutationRate = .05
+    crossoverRate = .8
+    mutationRate = .4
+    mutationLikelihood = .01
     topologicalMutationRate = 0
-    valueReplacementBias = .4
-    mutationMagnitudeLow = .000000000000000001
+    valueReplacementBias = 0
+    mutationMagnitudeLow = .01
     mutationMagnitudeHigh = .1
     elitismWeight = 0
 
     # GA Algorithm Parameters
     selectionMethodIndicator = 1
     rouletteWheelselectionBias = .08
-    tournamentPopulationProportion = 1
+    tournamentPopulationProportion = .3
     
     # Data Frame Parameters
-    stimulusProductPairCount = 10
-    productVectorSize = 10
+    stimulusProductPairCount = 2
+    productVectorSize = 2
     productValueLow = 0.0
-    productValueHigh = 256
+    productValueHigh = 1
 
     # Mapping Operator Paremeters
-    backingTensorDepth = 10
+    backingTensorDepth = 4
     backingTensorValueLow = -1.0
     backingTensorValueHigh = 1.0
 

@@ -32,6 +32,7 @@ class GeneticAlgorithm :
     # Hyperparameters
     crossoverRate = .9
     mutationRate = .2
+    mutationLikelihood = .1
     topologicalMutationRate = .05
     valueReplacementBias = .2
     mutationMagnitudeLow = .00000000001
@@ -52,6 +53,7 @@ class GeneticAlgorithm :
         self.selectionMethodIndicator = evaluationModule.selectionMethodIndicator
         self.crossoverRate = evaluationModule.crossoverRate
         self.mutationRate = evaluationModule.mutationRate
+        self.mutationLikelihood = evaluationModule.mutationLikelihood
         self.topologicalMutationRate = evaluationModule.topologicalMutationRate
         self.valueReplacementBias = evaluationModule.valueReplacementBias
         self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
@@ -510,6 +512,7 @@ class GeneticAlgorithm :
         
         for mappingOperator in self.population :
             mappingOperator.mutate(self.mutationRate,
+                                   self.mutationLikelihood,
                                    self.mutationMagnitudeLow,
                                    self.mutationMagnitudeHigh,
                                    self.topologicalMutationRate,

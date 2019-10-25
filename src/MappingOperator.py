@@ -61,7 +61,11 @@ class MappingOperator :
         for i in range(self.backingTensorDepth) :
             self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
-    def mutate(self, mutationRate, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
+    def mutate(self, mutationRate, mutationLikelihood, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
+
+        # Decide whether to mutate or not
+        if random.uniform(0, 1) > mutationRate :
+            return
 
         # Randomly add a new layer
         addALayerChance = random.uniform(0, 1)
@@ -97,7 +101,7 @@ class MappingOperator :
         for i in range(len(self.backingTensor)) :
             rank1Tensor = self.backingTensor[i].numpy()
             for j in range(len(rank1Tensor)) :
-                if random.uniform(0, 1) < mutationRate :
+                if random.uniform(0, 1) < mutationLikelihood :
                     if random.uniform(0, 1) < valueReplacementBias :
                         rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                     else :
@@ -113,7 +117,7 @@ class MappingOperator :
                             
         # Randomly mutate the bias values
         for i in range(len(self.backingTensorBiases)) :
-            if random.uniform(0, 1) < mutationRate :
+            if random.uniform(0, 1) < mutationLikelihood :
                 if random.uniform(0, 1) < valueReplacementBias :
                     self.backingTensorBiases[i] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                 else :
