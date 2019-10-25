@@ -16,12 +16,12 @@ class EvaluationModule :
     # --------------------
     
     # GA Parameters
-    populationSizeFactor = 25
+    populationSizeFactor = 10
     maxGenerations = 1000000000
-    crossoverRate = .8
-    mutationRate = .5
+    crossoverRate = .9
+    mutationRate = .05
     topologicalMutationRate = 0
-    valueReplacementBias = .3
+    valueReplacementBias = .4
     mutationMagnitudeLow = .000000000000000001
     mutationMagnitudeHigh = .1
     elitismWeight = 0
@@ -32,18 +32,18 @@ class EvaluationModule :
     tournamentPopulationProportion = 1
     
     # Data Frame Parameters
-    stimulusProductPairCount = 3
-    productVectorSize = 1
+    stimulusProductPairCount = 10
+    productVectorSize = 10
     productValueLow = 0.0
     productValueHigh = 256
 
     # Mapping Operator Paremeters
-    backingTensorDepth = 8
+    backingTensorDepth = 10
     backingTensorValueLow = -1.0
     backingTensorValueHigh = 1.0
 
     # Performance Metrics
-    totalGenerations = 0
+    totalGenerations = -1.0
     bestFitness = 99999999
     averageFitness = 99999999
     averageNumberOfGenerationsBetweenFitnessGains = 99999999
