@@ -33,6 +33,7 @@ class GeneticAlgorithm :
     crossoverRate = .9
     mutationRate = .2
     mutationLikelihood = .1
+    biasMutationLikelihood = .1
     topologicalMutationRate = .05
     valueReplacementBias = .2
     mutationMagnitudeLow = .00000000001
@@ -54,6 +55,7 @@ class GeneticAlgorithm :
         self.crossoverRate = evaluationModule.crossoverRate
         self.mutationRate = evaluationModule.mutationRate
         self.mutationLikelihood = evaluationModule.mutationLikelihood
+        self.biasMutationLikelihood = evaluationModule.biasMutationLikelihood
         self.topologicalMutationRate = evaluationModule.topologicalMutationRate
         self.valueReplacementBias = evaluationModule.valueReplacementBias
         self.mutationMagnitudeLow = evaluationModule.mutationMagnitudeLow
@@ -387,27 +389,32 @@ class GeneticAlgorithm :
             # Crossover values in the backing tensor between the two parents
             for j in range(len(parentABackingTensor)) :
 
-                newPopulationMemberBackingTensorRank1TensorMember = []
-                parentABackingTensorRank1TensorMember = parentABackingTensor[j].numpy()
-                parentBBackingTensorRank1TensorMember = parentBBackingTensor[j].numpy()
+                newPopulationMemberBackingTensorRank2TensorMember = []
+                parentABackingTensorRank2TensorMember = parentABackingTensor[j].numpy()
+                parentBBackingTensorRank2TensorMember = parentBBackingTensor[j].numpy()
 
-                for k in range(len(parentABackingTensorRank1TensorMember)) : 
+                for k in range(len(parentABackingTensorRank2TensorMember)) :
 
-                    # Notice we default to parent A's data
-                    if random.uniform(0, 1) < .5 :
-                        newPopulationMemberBackingTensorRank1TensorMember.append(parentBBackingTensorRank1TensorMember[k])
-                    else :
-                        newPopulationMemberBackingTensorRank1TensorMember.append(parentABackingTensorRank1TensorMember[k])
+                    newPopulationMemberBackingTensorRank1TensorMember = []
+                    parentABackingTensorRank1TensorMember = parentABackingTensorRank2TensorMember[k]
+                    parentBBackingTensorRank1TensorMember = parentBBackingTensorRank2TensorMember[k]
+                    
+                    for l in range(len(parentABackingTensorRank1TensorMember)) :
+                        
+                        if random.uniform(0, 1) < .5 :
+                            newPopulationMemberBackingTensorRank1TensorMember.append(parentBBackingTensorRank1TensorMember[l])
+                        else :
+                            newPopulationMemberBackingTensorRank1TensorMember.append(parentABackingTensorRank1TensorMember[l])
 
-                # Convert the new member's backing tensor rank 1 tensor to a Tensorflow Tensor
-                newLayer = tf.convert_to_tensor(newPopulationMemberBackingTensorRank1TensorMember)
+                    newPopulationMemberBackingTensorRank2TensorMember.append(newPopulationMemberBackingTensorRank1TensorMember)
+                    
+                newLayer = tf.convert_to_tensor(newPopulationMemberBackingTensorRank2TensorMember)
                 newPopulationMemberBackingTensor.append(newLayer)    
 
             # Crossover the values in the backing tensor bias tensors
             newPopulationMemberBackingTensorBiases = []
             for j in range(len(parentABackingTensorBiases)) :
 
-                # Notice we default to parent A's data
                 if random.uniform(0, 1) < .5 :
                     newPopulationMemberBackingTensorBiases.append(parentBBackingTensorBiases[j])
                 else :
@@ -513,6 +520,7 @@ class GeneticAlgorithm :
         for mappingOperator in self.population :
             mappingOperator.mutate(self.mutationRate,
                                    self.mutationLikelihood,
+                                   self.biasMutationLikelihood,
                                    self.mutationMagnitudeLow,
                                    self.mutationMagnitudeHigh,
                                    self.topologicalMutationRate,

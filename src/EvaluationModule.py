@@ -21,6 +21,7 @@ class EvaluationModule :
     crossoverRate = .8
     mutationRate = .4
     mutationLikelihood = .01
+    biasMutationLikelihood = .01
     topologicalMutationRate = 0
     valueReplacementBias = 0
     mutationMagnitudeLow = .0000001

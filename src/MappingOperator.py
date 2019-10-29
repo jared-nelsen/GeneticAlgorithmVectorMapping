@@ -61,7 +61,7 @@ class MappingOperator :
         for i in range(self.backingTensorDepth) :
             self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
-    def mutate(self, mutationRate, mutationLikelihood, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
+    def mutate(self, mutationRate, mutationLikelihood, biasMutationLikelihood, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
 
         # Decide whether to mutate or not
         if random.uniform(0, 1) > mutationRate :
@@ -80,7 +80,7 @@ class MappingOperator :
 
             # Generate the randomized new bias value
             newBias = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
-            
+
             # Insert the new bias at the insertion index
             self.backingTensorBiases.insert(randomInsertionIndex, newBias)
 
@@ -99,25 +99,32 @@ class MappingOperator :
         # Randomly mutate the values in the backing tensor
         newBackingTensor = []
         for i in range(len(self.backingTensor)) :
-            rank1Tensor = self.backingTensor[i].numpy()
-            for j in range(len(rank1Tensor)) :
-                if random.uniform(0, 1) < mutationLikelihood :
-                    if random.uniform(0, 1) < valueReplacementBias :
-                        rank1Tensor[j] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
-                    else :
-                        mutationMagnitude = random.uniform(mutationMagnitudeLow, mutationMagnitudeHigh)
-                        if random.uniform(0, 1) < .5 :
-                            rank1Tensor[j] = rank1Tensor[j] + mutationMagnitude
+            rank2Tensor = self.backingTensor[i].numpy()
+            newRank2Tensor = []
+            for j in range(len(rank2Tensor)) :
+                rank1Tensor = rank2Tensor[j]
+                newRank1Tensor = []
+                for k in range(len(rank1Tensor)) :
+                    newTensorValue = rank1Tensor[k]
+                    if random.uniform(0, 1) < mutationLikelihood :
+                        if random.uniform(0, 1) < valueReplacementBias :
+                            newTensorValue = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                         else :
-                            rank1Tensor[j] = rank1Tensor[j] - mutationMagnitude
-            newBackingTensor.append(tf.convert_to_tensor(rank1Tensor))
+                            mutationMagnitude = random.uniform(mutationMagnitudeLow, mutationMagnitudeHigh)
+                            if random.uniform(0, 1) < .5 :
+                                newTensorValue = newTensorValue + mutationMagnitude
+                            else :
+                                newTensorValue = newTensorValue - mutationMagnitude
+                    newRank1Tensor.append(newTensorValue)
+                newRank2Tensor.append(rank1Tensor)
+            newBackingTensor.append(tf.convert_to_tensor(newRank2Tensor))
 
         # Set the mutated backing tensor to be the new backing tensor
         self.backingTensor = newBackingTensor
                             
         # Randomly mutate the bias values
         for i in range(len(self.backingTensorBiases)) :
-            if random.uniform(0, 1) < mutationLikelihood :
+            if random.uniform(0, 1) < biasMutationLikelihood :
                 if random.uniform(0, 1) < valueReplacementBias :
                     self.backingTensorBiases[i] = random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh)
                 else :
@@ -170,13 +177,15 @@ class MappingOperator :
         cloneBackingTensor = []
 
         for i in range(len(self.backingTensor)) :
-            rank1Tensor = []
-
-            backingTensorRank1Tensor = self.backingTensor[i].numpy()
-            for j in range(len(backingTensorRank1Tensor)) :
-                rank1Tensor.append(backingTensorRank1Tensor[j])
-
-            cloneBackingTensor.append(tf.convert_to_tensor(rank1Tensor))
+            backingTensorRank2Tensor = self.backingTensor[i].numpy()
+            newBackingRank2Tensor = []
+            for j in range(len(backingTensorRank2Tensor)) :
+                backingTensorRank1Tensor = self.backingTensorRank2Tensor[j]
+                newBackingRank1Tensor = []
+                for k in range(len(backingTensorRank1Tensor)) :
+                    newBackingRank1Tensor.append(backingTensorRank1Tensor[k])
+                newBackingRank2Tensor.append(newBackingRank1Tensor)
+            cloneBackingTensor.append(tf.convert_to_tensor(newBackingRank2Tensor))
 
         clone.setBackingTensor(cloneBackingTensor)
 
