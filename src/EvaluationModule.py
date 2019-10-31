@@ -56,14 +56,14 @@ class EvaluationModule :
     # GA Parameters
     populationSizeFactor = 5 # This value is multiplied by the cpu count to size the population
     maxGenerations = 1000000000 # The maximum number of generations the GA will run before quiting
-    crossoverRate = .8  # The rate at which the members of the population are crossed over per iteration of the GA
-    mutationRate = .1   # The rate at which the members of the population are mutated per iteration of the GA
-    mutationLikelihood = .1 # The rate at which the weights of a member Mapping Operator are mutated
-    biasMutationLikelihood = .1 # The rate at which the biases of the Mapping Operator are mutated
+    crossoverRate = .9  # The rate at which the members of the population are crossed over per iteration of the GA
+    mutationRate = .3   # The rate at which the members of the population are mutated per iteration of the GA
+    mutationLikelihood = .01 # The rate at which the weights of a member Mapping Operator are mutated
+    biasMutationLikelihood = .01 # The rate at which the biases of the Mapping Operator are mutated
     topologicalMutationRate = 0 # The rate at which the depth of the Mapping Operator is mutated
-    valueReplacementBias = .05 # The rate at which individual weights of the Mapping Operators are replaced versus adjusted
-    mutationMagnitudeLow = .00000001 # The lowest possible adjustment value that can happen to a weight during mutation
-    mutationMagnitudeHigh = .0001 # The highest possible adjustment value that can happen to a weight during mutation
+    valueReplacementBias = .5 # The rate at which individual weights of the Mapping Operators are replaced versus adjusted
+    mutationMagnitudeLow = .00001 # The lowest possible adjustment value that can happen to a weight during mutation
+    mutationMagnitudeHigh = .1 # The highest possible adjustment value that can happen to a weight during mutation
     elitismWeight = 0 # The proportion of the population that will be saved as elite members and injected at the next generation
 
     # GA Algorithm Parameters
@@ -78,8 +78,8 @@ class EvaluationModule :
     productValueHigh = 1 # The highest possible value that a value in a Product Vector can take on
 
     # Mapping Operator Paremeters
-    backingTensorDepth = 8 # The depth of the backing tensor that the Mapping Operator represents. Think of this as layers of weights
-    backingTensorValueLow = -1.0 # The lowest possible weight value in a backing tensor
+    backingTensorDepth = 20 # The depth of the backing tensor that the Mapping Operator represents. Think of this as layers of weights
+    backingTensorValueLow = 0 # The lowest possible weight value in a backing tensor
     backingTensorValueHigh = 1.0 # The highest possible weight in a backing tensor
 
     # Performance Metrics

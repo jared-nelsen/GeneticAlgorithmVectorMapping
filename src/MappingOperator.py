@@ -1,5 +1,6 @@
 
 import random as random
+import numpy as np
 
 import tensorflow as tf
 
@@ -147,8 +148,8 @@ class MappingOperator :
                             else :
                                 newTensorValue = newTensorValue - mutationMagnitude
                     newRank1Tensor.append(newTensorValue)
-                newRank2Tensor.append(rank1Tensor)
-            newBackingTensor.append(tf.convert_to_tensor(newRank2Tensor))
+                newRank2Tensor.append(newRank1Tensor)
+            newBackingTensor.append(tf.convert_to_tensor(newRank2Tensor, dtype=np.float32))
 
         # Set the mutated backing tensor to be the new backing tensor
         self.backingTensor = newBackingTensor
