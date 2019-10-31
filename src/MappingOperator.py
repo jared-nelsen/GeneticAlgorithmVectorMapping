@@ -3,6 +3,29 @@ import random as random
 
 import tensorflow as tf
 
+# -------------------------------------------------------------
+# File:
+# -----
+#   MappingOperator.py
+# -------------------------------------------------------------
+# Description:
+# ------------
+#   The Mapping Operator file contains the Mapping Operator
+#   class. The Mapping operator class has several purposes:
+#
+#       1. Contain the backing tensor that represents the weights
+#          of the neural network represented by this Mapping
+#          Operator.
+#       2. Mutation of the backing tensor. This operation
+#          is the implementation of the mutation step in the
+#          Genetic Algorithm. It was easier to do it here instead
+#          of the Genetic Algorithm file because of the easy
+#          access to the backing tensor and necessary parameters.
+#
+#       See DataFrame.py for an explanation of the purpose of
+#       the backing tensor in the algorithm.
+# -------------------------------------------------------------
+
 class MappingOperator :
 
     # Evaluation Module
@@ -25,7 +48,7 @@ class MappingOperator :
     # --------------
     #   The backing tensor is made up of a set of rank 1 tensors (vectors).
     #   Their dimensions are always (in this implementation) 1 X N where
-    #   N is the product vector size.0
+    #   N is the product vector size.
     #   The backing tensor can also be thought of as a rank 2 tensor where
     #   The Z dimension is described by the successive ordering of the set
     #   of rank 1 tensors.
@@ -61,6 +84,14 @@ class MappingOperator :
         for i in range(self.backingTensorDepth) :
             self.backingTensorBiases.append(random.uniform(self.backingTensorValueLow, self.backingTensorValueHigh))
             
+    # Function:
+    # --------- 
+    #   evaluateMappingOperator()
+    # --------------------------------------------------------------------------
+    # Description:
+    # ------------
+    #   See GeneticAlgorithm.py for an explanation on mutation.
+    # --------------------------------------------------------------------------
     def mutate(self, mutationRate, mutationLikelihood, biasMutationLikelihood, mutationMagnitudeLow, mutationMagnitudeHigh, topologicalMutationRate, valueReplacementBias) :
 
         # Decide whether to mutate or not

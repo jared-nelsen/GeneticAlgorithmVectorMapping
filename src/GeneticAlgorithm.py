@@ -9,6 +9,30 @@ import tensorflow as tf
 from DataFrame import DataFrame
 from MappingOperator import MappingOperator
 
+# -------------------------------------------------------------
+# File:
+# -----
+#   GeneticAlgorithm.py
+# -------------------------------------------------------------
+# Description:
+# ------------
+#   The GeneticAlgorithm.py file contains the Genetic Algorithm
+#   class. The Genetic Algorithm class's responsibility is to
+#   evolve the best mapping between Stimulus-Product pairs that
+#   it can. It does this by evolving a set of solutions called
+#   Mapping Operators by mimicking natural selection. The
+#   algorithm can best be understood by following the function
+#   calls in the run() function and reading each function's
+#   documentation.
+#
+# Resources:
+# ----------
+#   https://en.wikipedia.org/wiki/Genetic_algorithm
+#   https://blog.floydhub.com/introduction-to-genetic-algorithms/
+#   https://www.toptal.com/algorithms/genetic-algorithms
+#   http://www.cleveralgorithms.com/nature-inspired/evolution/genetic_algorithm.html
+# -------------------------------------------------------------
+
 class GeneticAlgorithm :
 
     # Evaluation Module
@@ -279,7 +303,6 @@ class GeneticAlgorithm :
 
             selectedPopulation.append(selectedCompetitors[championIndex])
                 
-            
         self.population = selectedPopulation
     
     # Function:
@@ -814,4 +837,3 @@ class GeneticAlgorithm :
             merged.append(b.pop(0))
 
         return merged
-
