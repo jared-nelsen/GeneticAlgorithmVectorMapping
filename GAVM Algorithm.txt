@@ -1,8 +1,6 @@
 
 GAVM - Genetic Algorithm Vector Mapping
 ------------------------------------------
-Author: Jared Nelsen
-Organization: Chronic Labs, LLC
 Project Start Date: 9-15-19
 ------------------------------------------
 
