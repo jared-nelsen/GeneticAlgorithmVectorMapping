@@ -1,8 +1,41 @@
 # Genetic Algorithm Vector Mapping
 
+##### A project studying Genetic Algorithms as a training algorithm for neural networks
 
+In this project, I built a Genetic Algorithm that trains a neural network to map arbitrary data vectors together. Rather than trying to come up with or find data that has some real and useful underlying mapping function I wanted to measure the efficacy of the approach on random data to evaluate the algorithm without bias towards one data set. I asked a simple question ***how well can a neural network be trained to be a mapping operator between two sets of random data.*** This project is purely an ***experiment*** for use in learning how to use Genetic Algorithms as a training algorithm for neural networks. 
 
-### Traditional Neural Network Training Approach
+##### Preliminary results
+
+Based on trials of randomized data the algorithm proves to converge towards a mapping function between generated data. Just like any other approach to training a neural network, the algorithm may never arrive at a perfect mapping function because there might not be a perfect one, or that it is too highly dimensional to approximate in any reasonable amount of time. However, the algorithm proves to steadily approach an approximation. Different runs produce different results: one run may converge all the way to a near-optimal approximation and another run might flatline along the way. In the future I might experiment with the algorithm parameters on one single dataset to find the best overall parameters. 
+
+##### Recommendations
+
+In order to understand the source code and the methodology it is first necessary to understand Genetic Algorithms. I've included several sections below outlining traditional training approaches and Genetic Algorithms in general.
+
+My recommended reading path:
+
+> 1. Read the summary and outline in the sections below to learn more about Genetic Algorithms
+> 2. Follow this path through the source code:
+>    1. gavm.py
+>    2. DataFrame.py
+>    3. MappingOperator.py
+>    4. EvaluationModule.py
+>    5. GeneticAlgorithm.py
+
+##### Experimenting with GAVM
+
+To run GAVM:
+
+> 1. Change directories to src
+> 2. Run this command in a terminal: ***python gavm.py***
+
+To experiment with the parameters of the algorithm, alter the source code values in EvaluationModule.py and rerun GAVM.
+
+I've tuned the current incarnation of EvaluationModule.py with the most effective parameters I've found this far. Note that the dimensions of the training data that is generated are currently very small for experimentation's sake.
+
+***Happy experimenting!***
+
+### Genetic Algorithms: A New Approach to Training Neural Networks
 
 Traditionally, neural networks are trained using the backpropagation algorithm. Backpropagation is a well studied algorithm and is used as the default training algorithm for most major neural network frameworks. 
 
@@ -24,7 +57,7 @@ What if there was a more abstract way to treat the ***optimization*** of weights
 
 > In Computer Science, a search algorithm is any algorithm which retrieves information from within some data structure or calculated discrete or continuous search space.
 
-To be pedantic, even though we are using search to reframe our thought process, we are still trying to learn an underlying mapping function between input and outputs. We are just ***traversing*** the search space in a different manner. To further reframe our thoughts, instead of calling a the measure of how well the neural network fits the underlying data a ***loss function*** we call it an ***heuristic***. Our heuristic will guide us through the search space by giving our algorithm an objective measure of how well or how poor a solution is.
+To be pedantic, even though we are using search to reframe our thought process, we are still trying to learn an underlying mapping function between input and outputs. We are just ***traversing*** the search space in a different manner. To further reframe our thoughts, instead of calling a the measure of how well the neural network fits the underlying data a ***loss function*** we call it an ***heuristic***. Our heuristic will guide us through the search space by giving our algorithm an objective measure of how good or how poor a solution is.
 
 ##### The Motivation
 
@@ -53,3 +86,40 @@ How can we solve this problem of converging to a local optimum? The simple answe
 ![Exploration](https://d9hhrg4mnvzow.cloudfront.net/try.neuroshell.com/features/8f5ea36d-genetic-optimization_0cv0bb0cv0bb00000001o.jpg)
 
 However, it is not always clear when to ***explore*** and when to ***exploit***. What would you say is the right balance between exploring and exploiting? What would happen if we explored all the time? It is clear that we would never reach any optimum! And we have already surmised what would happen if we were to exploit all the time. Let's try to answer this by observing a natural phenomenon: ***natural selection***!
+
+#### Learning With Natural Processes
+
+Oftentimes Computer Scientists use observation as a means to solve problems. There are many techniques in computing that have been developed by observing the natural world. Techniques such as Simulated Annealing, Ant Colony Optimization, and Particle Swarm Optimization are among the more well known candidates.
+
+> See this link for a great list of metaphor based metaheuristics: https://en.wikipedia.org/wiki/List_of_metaphor-based_metaheuristics
+
+However, I looked to a technique called a ***Genetic Algorithm*** for this project. A Genetic Algorithm mimics biological evolution to explore search spaces. The idea behind a GA is to model a balance between exploration and exploitation by with two key components:
+
+> ***Mutation*** is the ***exploratory*** element of the algorithm. It mimics the mutations biological creatures develop that allow them to adapt to new environments. Just like in the natural world, mutation occurs very ***infrequently***. The thinking goes that a creature (a solution) that only mutates itself will likely not survive for long. However, some mutation might offer a competitive advantage for a creature in the quest for survival. If we relate this back to what is going on in the optimization of a search space we can notice an allegory: exploration, just like biological mutation, can be beneficial in avoiding local optima in the search space.
+>
+> ***Crossover*** is the ***exploitative*** element of the algorithm. It mimics the biological phenomenon of reproduction. Luckily, when two humans reproduce the child is definitely going to be human too. This is good because the child's parents were successful enough to reproduce. In other words, they were a good solution to being human. It is likely their child will be too. This is an analog to our simplistic heuristic of always improving on our current solution in the search space because it will lead to immediate results. This is the driving force in optimization. It happens ***often***.
+
+##### Key Components
+
+There are two other key components of the Genetic Algorithm:
+
+> 1. An ***encoding*** is a representation of a solution in the search space. Encodings are powerful because they are flexible. For example, in the ***Traveling Salesman Problem*** an encoding would be a route through the cities in the graph. ***Simulation parameters*** can be represented as an encoding of set of real valued numbers. ***Instructions*** can be represented as encodings using binary A ***neural network*** can be represented as a set of real valued weights. As long as there are ***discrete components represented as arrangements*** then a GA might be a good choice as an optimization algorithm. Encodings are arranged as a ***population*** of candidate solutions.
+> 2. A ***fitness function***, or heuristic, is a measure of how 'good' a solution is. In the Traveling Salesman problem a good fitness function would be ***overall route length***. In a simulation a good fitness function might be a ***number of how well an object performs in the simulation***. In procedure generation a good fitness function might be ***how far off*** following the generated instructions will leave you. In a neural network a ***loss function*** is a good fitness function. A ***measure of how optimal*** a solution is makes a good fitness function.
+
+#### Genetic Algorithm Pseudocode
+
+The pseudocode behind the algorithm is:
+
+```pyt
+while generationCount < maxGenerations and not optimalSolutionFound
+	selectFitessMembersFromPopulationToCrossOver()
+	crossoverSelectedMembers()
+	mutateSelectedMembers()
+	evaluatePopulationMembersAgainstFitnessFunction()
+```
+
+Using this algorithm, the ***average fitness of the population*** gets better and better. At each generation there is a higher likelihood of reaching a new ***global best solution*** which is represented as a member of the population.
+
+A candidate solution populations average fitness over time:
+
+![](http://www.scielo.br/img/revistas/lajss/v13n15//1679-7825-lajss-13-15-02922-gf4.jpg)

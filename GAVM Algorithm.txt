@@ -21,13 +21,6 @@ Operators using the same schema. Once the algorithm generates a Mapping Operator
 into the Product Vector and the algorithm runs again. In this way, large sets of vectors can be iteratively folded into
 smaller ones.
 
-Implementation details:
------------------------
-I have determined that the values of the matrix should be constrained to a scale of 0 to 1. This seems to make more sense
-than letting the values in the backing tensor vary by huge degrees. My intuition tells me that the algorithm will converge
-more smoothly this way. This means that I will have to implement a scaling function to the outputs but this seems easy
-enough with Tensorflow.
-
 Tools
 -----
 Python will be used for the initial implementation. It was chosen because it has good APIs for Tensorflow. Tensorflow was
