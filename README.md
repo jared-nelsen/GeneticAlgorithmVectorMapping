@@ -2,7 +2,7 @@
 
 ##### A project studying Genetic Algorithms as a training algorithm for neural networks
 
-In this project, I built a Genetic Algorithm that trains a neural network to map arbitrary data vectors together. Rather than trying to come up with or find data that has some real and useful underlying mapping function I wanted to measure the efficacy of the approach on random data to evaluate the algorithm without bias towards one data set. I asked a simple question ***how well can a neural network be trained to be a mapping operator between two sets of random data.*** This project is purely an ***experiment*** for use in learning how to use Genetic Algorithms as a training algorithm for neural networks. 
+In this project, I built a Genetic Algorithm that trains a neural network to map arbitrary data vectors together. I asked a simple question ***how well can a neural network be trained to be a mapping operator between two sets of random data.*** This project is purely an ***experiment*** for use in learning how to use Genetic Algorithms as a training algorithm for neural networks. 
 
 ##### Preliminary results
 
